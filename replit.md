@@ -2,7 +2,9 @@
 
 ## Overview
 
-StellarBridge is a full-stack web application that enables users to bridge cryptocurrencies between the Stellar and Ethereum (Sepolia testnet) networks. The application provides real-time DEX price comparisons, wallet integration, and transaction management with a modern, responsive UI built using React and Express.
+StellHydra is a full-stack web application that enables users to bridge cryptocurrencies between the Stellar and Ethereum (Sepolia testnet) networks. The application provides real-time DEX price comparisons, wallet integration, and transaction management with a modern, responsive UI built using React and Express.
+
+**Repository**: https://github.com/JulioMCruz/StellHydra
 
 ## User Preferences
 
