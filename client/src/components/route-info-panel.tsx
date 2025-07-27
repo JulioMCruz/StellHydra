@@ -29,7 +29,11 @@ export function RouteInfoPanel({
   isVisible
 }: RouteInfoPanelProps) {
   if (!isVisible || !simulation || !fromAmount || parseFloat(fromAmount) === 0) {
-    return null;
+    return (
+      <div className="w-full lg:w-80 opacity-0 pointer-events-none">
+        {/* Invisible placeholder to maintain layout space */}
+      </div>
+    );
   }
 
   const getNetworkColor = (network: string) => {
@@ -41,7 +45,7 @@ export function RouteInfoPanel({
   };
 
   return (
-    <Card className="w-full lg:w-80 glass-card border border-white/10 rounded-xl">
+    <Card className="w-full lg:w-80 glass-card border border-white/10 rounded-xl animate-in slide-in-from-right-2 duration-300 shadow-2xl">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <TrendingUp className="w-4 h-4" />
