@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
-import { BridgeInterface } from "@/components/bridge-interface";
+import { BridgeInterface } from "@/components/bridge-interface-new";
 import { RouteInfoPanel } from "@/components/route-info-panel";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
