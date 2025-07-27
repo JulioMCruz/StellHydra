@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowDownUp, Shield } from "lucide-react";
+import { ArrowDownUp, Shield, Info } from "lucide-react";
 import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
+import { RouteInfoPanel } from "./route-info-panel";
 
 interface BridgeInterfaceProps {
   onRouteUpdate?: (routeInfo: {
@@ -17,9 +18,25 @@ interface BridgeInterfaceProps {
     simulation: any;
     isVisible: boolean;
   }) => void;
+  routeInfo?: {
+    fromToken: string;
+    toToken: string;
+    fromNetwork: string;
+    toNetwork: string;
+    fromAmount: string;
+    simulation: any;
+    isVisible: boolean;
+  };
+  showMobileRouteInfo?: boolean;
+  setShowMobileRouteInfo?: (show: boolean) => void;
 }
 
-export function BridgeInterface({ onRouteUpdate }: BridgeInterfaceProps) {
+export function BridgeInterface({ 
+  onRouteUpdate, 
+  routeInfo, 
+  showMobileRouteInfo, 
+  setShowMobileRouteInfo 
+}: BridgeInterfaceProps) {
   const [fromAmount, setFromAmount] = useState("");
   const [fromToken, setFromToken] = useState("XLM");
   const [toToken, setToToken] = useState("ETH");
@@ -67,19 +84,20 @@ export function BridgeInterface({ onRouteUpdate }: BridgeInterfaceProps) {
   }, [fromToken, toToken, fromNetwork, toNetwork, fromAmount, simulation, onRouteUpdate]);
 
   return (
-    <div className="space-y-4">
-      {/* Compact Header */}
-      <div className="text-center">
-        <h1 className="text-lg font-bold gradient-text">Bridge</h1>
-        <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground mt-1">
-          <Shield className="w-3 h-3 text-green-500" />
-          <span>Secure</span>
+    <div className="relative">
+      <div className="space-y-4">
+        {/* Compact Header */}
+        <div className="text-center">
+          <h1 className="text-lg font-bold gradient-text">Bridge</h1>
+          <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground mt-1">
+            <Shield className="w-3 h-3 text-green-500" />
+            <span>Secure</span>
+          </div>
         </div>
-      </div>
 
-      {/* Compact Bridge Card */}
-      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-md mx-auto">
-        <CardContent className="p-4">
+        {/* Compact Bridge Card */}
+        <Card className="glass-card rounded-xl border border-white/10 w-full max-w-md mx-auto relative">
+          <CardContent className="p-4">
           <div className="space-y-4">
             {/* From Section */}
             <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
@@ -216,6 +234,36 @@ export function BridgeInterface({ onRouteUpdate }: BridgeInterfaceProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Mobile Route Info Toggle */}
+      {routeInfo?.isVisible && (
+        <div className="mt-4 lg:hidden">
+          <Button
+            variant="outline"
+            onClick={() => setShowMobileRouteInfo?.(!showMobileRouteInfo)}
+            className="w-full glass-card border-white/10"
+          >
+            <Info className="w-4 h-4 mr-2" />
+            {showMobileRouteInfo ? "Hide" : "Show"} Route Details
+          </Button>
+          
+          {showMobileRouteInfo && (
+            <div className="mt-4">
+              <RouteInfoPanel {...routeInfo} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
+
+    {/* Desktop Route Information Panel - Attached to Bridge Card */}
+    <div className="hidden lg:block absolute left-full top-16 ml-4 z-30">
+      {/* Connector line */}
+      {routeInfo?.isVisible && (
+        <div className="absolute right-full top-6 w-4 h-0.5 bg-gradient-to-r from-white/20 to-transparent"></div>
+      )}
+      {routeInfo && <RouteInfoPanel {...routeInfo} />}
+    </div>
+  </div>
   );
 }
