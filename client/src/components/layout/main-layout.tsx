@@ -98,8 +98,10 @@ export function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto">
-          {children}
+        <main className="flex-1 overflow-auto bg-background/50">
+          <div className="h-full">
+            {children}
+          </div>
         </main>
 
         {/* Footer */}

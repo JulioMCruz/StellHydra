@@ -40,28 +40,22 @@ export function BridgeInterface() {
   const canBridge = fromAmount && parseFloat(fromAmount) > 0 && (stellarWallet.isConnected || sepoliaWallet.isConnected);
 
   return (
-    <div className="space-y-6">
-      {/* Bridge Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold gradient-text">Cross-Chain Bridge</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Bridge tokens between Stellar and Ethereum networks
-          </p>
-        </div>
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <Shield className="w-4 h-4 text-green-500" />
-          <span className="hidden sm:inline">Secure Protocol</span>
-          <span className="sm:hidden">Secure</span>
+    <div className="space-y-4">
+      {/* Compact Header */}
+      <div className="text-center">
+        <h1 className="text-lg font-bold gradient-text">Bridge</h1>
+        <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground mt-1">
+          <Shield className="w-3 h-3 text-green-500" />
+          <span>Secure</span>
         </div>
       </div>
 
-      {/* Main Bridge Card */}
-      <Card className="glass-card rounded-2xl border border-white/10">
-        <CardContent className="p-6">
-          <div className="space-y-6">
+      {/* Compact Bridge Card */}
+      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-md mx-auto">
+        <CardContent className="p-4">
+          <div className="space-y-4">
             {/* From Section */}
-            <div className={`glass-card rounded-xl p-4 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
+            <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
               <div className="flex items-center justify-between mb-3">
                 <label className="text-sm font-medium text-muted-foreground">From</label>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -93,7 +87,7 @@ export function BridgeInterface() {
                   placeholder="0.0"
                   value={fromAmount}
                   onChange={(e) => setFromAmount(e.target.value)}
-                  className="flex-1 bg-transparent text-xl sm:text-2xl font-semibold border-none outline-none text-right min-h-[48px] sm:min-h-auto"
+                  className="flex-1 bg-transparent text-lg font-semibold border-none outline-none text-right"
                   inputMode="decimal"
                 />
               </div>
@@ -118,7 +112,7 @@ export function BridgeInterface() {
             </div>
 
             {/* To Section */}
-            <div className={`glass-card rounded-xl p-4 border ${toNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
+            <div className={`glass-card rounded-lg p-3 border ${toNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
               <div className="flex items-center justify-between mb-3">
                 <label className="text-sm font-medium text-muted-foreground">To</label>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -137,7 +131,7 @@ export function BridgeInterface() {
                   />
                 </div>
                 
-                <div className="flex-1 text-xl sm:text-2xl font-semibold text-right min-h-[48px] sm:min-h-auto flex items-center justify-end">
+                <div className="flex-1 text-lg font-semibold text-right flex items-center justify-end">
                   {isSimulating ? (
                     <div className="animate-pulse bg-muted/20 h-8 w-24 rounded"></div>
                   ) : (
@@ -153,48 +147,43 @@ export function BridgeInterface() {
               )}
             </div>
 
-            {/* Bridge Details */}
+            {/* Bridge Details - Compact */}
             {simulation && (
-              <div className="mt-6 space-y-3">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Exchange Rate</span>
+              <div className="mt-4 space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Rate</span>
                   <span>1 {fromToken} = {simulation.rate} {toToken}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Bridge Fee</span>
-                  <span>{simulation.fee} {fromToken} + Gas</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Fee</span>
+                  <span>{simulation.fee} {fromToken}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Estimated Time</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Time</span>
                   <span>{simulation.estimatedTime}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Minimum Received</span>
-                  <span>{simulation.minimumReceived} {toToken}</span>
                 </div>
               </div>
             )}
 
-            {/* Bridge Button */}
+            {/* Bridge Button - Compact */}
             <Button
               onClick={executeBridge}
               disabled={!canBridge || isExecuting}
-              className="w-full mt-6 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 text-white font-semibold py-4 sm:py-4 h-12 sm:h-auto rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
-              size="lg"
+              className="w-full mt-4 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
             >
               {isExecuting ? (
                 <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
               ) : (
                 <ArrowDownUp className="w-4 h-4 mr-2" />
               )}
-              <span className="text-base sm:text-base">
-                {isExecuting ? "Processing..." : "Bridge Tokens"}
+              <span className="text-sm">
+                {isExecuting ? "Processing..." : "Bridge"}
               </span>
             </Button>
 
             {!stellarWallet.isConnected && !sepoliaWallet.isConnected && (
-              <p className="text-center text-sm text-muted-foreground mt-4">
-                Connect your wallet to start bridging
+              <p className="text-center text-xs text-muted-foreground mt-3">
+                Connect wallet to bridge
               </p>
             )}
           </div>
