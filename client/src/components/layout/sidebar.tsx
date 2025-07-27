@@ -72,7 +72,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
   return (
     <div className={`relative h-full transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-80'}`}>
-      <div className="h-full bg-blue-100 border-r border-blue-200 flex flex-col">
+      <div className="h-full glass-card border-r border-white/10 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           {!isCollapsed && (
