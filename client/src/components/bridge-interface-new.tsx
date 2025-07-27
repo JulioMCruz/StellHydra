@@ -89,45 +89,6 @@ export function BridgeInterface({
       <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative">
         <CardContent className="p-0">
           <div className="flex">
-            {/* Left Sidebar Panel - Route Selection */}
-            <div className="w-80 bg-stellar/10 rounded-l-xl p-4 border-r border-white/10">
-              <div className="space-y-4">
-                {/* Route Selection Header */}
-                <div>
-                  <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
-                  <div className="space-y-2">
-                    <div className="p-2 bg-stellar/20 rounded-lg border border-stellar/30">
-                      <div className="text-xs text-stellar font-medium">Direct Bridge</div>
-                      <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
-                    </div>
-                    <div className="p-2 glass-card rounded-lg border border-white/10 hover:bg-white/5 cursor-pointer">
-                      <div className="text-xs text-white">Multi-hop</div>
-                      <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Additional Info Panel */}
-                <div className="bg-background/20 rounded-lg p-3 border border-white/10">
-                  <h4 className="text-xs font-medium text-white mb-2">Additional Info</h4>
-                  <div className="space-y-2 text-xs text-muted-foreground">
-                    <div className="flex justify-between">
-                      <span>Network Status</span>
-                      <span className="text-green-400">Live</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Volume</span>
-                      <span>$2.4M</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Active Routes</span>
-                      <span>12</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Main Swapper Content */}
             <div className="flex-1 p-4">
               <div className="space-y-4">
@@ -285,11 +246,50 @@ export function BridgeInterface({
                 )}
               </div>
             </div>
+
+            {/* Right Sidebar Panel - Route Selection */}
+            <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10">
+              <div className="space-y-4">
+                {/* Route Selection Header */}
+                <div>
+                  <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
+                  <div className="space-y-2">
+                    <div className="p-2 bg-stellar/20 rounded-lg border border-stellar/30">
+                      <div className="text-xs text-stellar font-medium">Direct Bridge</div>
+                      <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
+                    </div>
+                    <div className="p-2 glass-card rounded-lg border border-white/10 hover:bg-white/5 cursor-pointer">
+                      <div className="text-xs text-white">Multi-hop</div>
+                      <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Info Panel */}
+                <div className="bg-background/20 rounded-lg p-3 border border-white/10">
+                  <h4 className="text-xs font-medium text-white mb-2">Additional Info</h4>
+                  <div className="space-y-2 text-xs text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Network Status</span>
+                      <span className="text-green-400">Live</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Volume</span>
+                      <span>$2.4M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Active Routes</span>
+                      <span>12</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Route Information Panel - Pops from right side */}
+      {/* Route Information Panel - Pops from far right side */}
       <div className="hidden lg:block absolute left-full top-0 ml-4 z-30">
         {routeInfo?.isVisible && (
           <>

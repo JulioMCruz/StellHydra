@@ -112,5 +112,9 @@ The application is designed for deployment on Replit with the following setup:
 - ✓ Implemented PWA capabilities with web app manifest
 - ✓ Fixed JSX syntax issues and improved code structure
 - ✓ Added proper mobile viewport settings and touch controls
+- ✓ Integrated sidebar directly into bridge component (right-side placement)
+- ✓ Removed site-wide sidebar in favor of component-integrated route selection
+- ✓ Added route selection panel with Direct Bridge and Multi-hop options
+- ✓ Included network status and volume statistics in integrated sidebar
 
 The architecture supports easy scaling and maintenance while providing a robust foundation for cross-chain bridging functionality across all devices and platforms.
