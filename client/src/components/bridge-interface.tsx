@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +7,19 @@ import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
 
-export function BridgeInterface() {
+interface BridgeInterfaceProps {
+  onRouteUpdate?: (routeInfo: {
+    fromToken: string;
+    toToken: string;
+    fromNetwork: string;
+    toNetwork: string;
+    fromAmount: string;
+    simulation: any;
+    isVisible: boolean;
+  }) => void;
+}
+
+export function BridgeInterface({ onRouteUpdate }: BridgeInterfaceProps) {
   const [fromAmount, setFromAmount] = useState("");
   const [fromToken, setFromToken] = useState("XLM");
   const [toToken, setToToken] = useState("ETH");
@@ -38,6 +50,21 @@ export function BridgeInterface() {
   };
 
   const canBridge = fromAmount && parseFloat(fromAmount) > 0 && (stellarWallet.isConnected || sepoliaWallet.isConnected);
+
+  // Update route information when relevant data changes
+  useEffect(() => {
+    if (onRouteUpdate) {
+      onRouteUpdate({
+        fromToken,
+        toToken,
+        fromNetwork,
+        toNetwork,
+        fromAmount,
+        simulation,
+        isVisible: !!(fromAmount && parseFloat(fromAmount) > 0 && simulation)
+      });
+    }
+  }, [fromToken, toToken, fromNetwork, toNetwork, fromAmount, simulation, onRouteUpdate]);
 
   return (
     <div className="space-y-4">
