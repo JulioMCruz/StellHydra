@@ -42,16 +42,17 @@ export function BridgeInterface() {
   return (
     <div className="space-y-6">
       {/* Bridge Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold gradient-text">Cross-Chain Bridge</h1>
+          <h1 className="text-xl sm:text-2xl font-bold gradient-text">Cross-Chain Bridge</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Bridge tokens between Stellar and Ethereum networks
           </p>
         </div>
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <Shield className="w-4 h-4 text-green-500" />
-          <span>Secure Protocol</span>
+          <span className="hidden sm:inline">Secure Protocol</span>
+          <span className="sm:hidden">Secure</span>
         </div>
       </div>
 
@@ -78,19 +79,22 @@ export function BridgeInterface() {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <TokenSelector
-                  selectedToken={fromToken}
-                  onTokenSelect={setFromToken}
-                  network={fromNetwork}
-                />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <div className="sm:w-auto">
+                  <TokenSelector
+                    selectedToken={fromToken}
+                    onTokenSelect={setFromToken}
+                    network={fromNetwork}
+                  />
+                </div>
                 
                 <Input
                   type="text"
                   placeholder="0.0"
                   value={fromAmount}
                   onChange={(e) => setFromAmount(e.target.value)}
-                  className="flex-1 bg-transparent text-2xl font-semibold border-none outline-none text-right"
+                  className="flex-1 bg-transparent text-xl sm:text-2xl font-semibold border-none outline-none text-right min-h-[48px] sm:min-h-auto"
+                  inputMode="decimal"
                 />
               </div>
               
@@ -107,9 +111,9 @@ export function BridgeInterface() {
                 variant="ghost"
                 size="sm"
                 onClick={handleSwapNetworks}
-                className="glass-card w-12 h-12 rounded-full border border-white/20 hover:bg-white/10 transition-all group"
+                className="glass-card w-12 h-12 sm:w-12 sm:h-12 rounded-full border border-white/20 hover:bg-white/10 transition-all group touch-manipulation"
               >
-                <ArrowDownUp className="w-4 h-4 text-muted-foreground group-hover:text-white transition-colors group-hover:rotate-180 transform duration-300" />
+                <ArrowDownUp className="w-5 h-5 sm:w-4 sm:h-4 text-muted-foreground group-hover:text-white transition-colors group-hover:rotate-180 transform duration-300" />
               </Button>
             </div>
 
@@ -124,16 +128,18 @@ export function BridgeInterface() {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <TokenSelector
-                  selectedToken={toToken}
-                  onTokenSelect={setToToken}
-                  network={toNetwork}
-                />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <div className="sm:w-auto">
+                  <TokenSelector
+                    selectedToken={toToken}
+                    onTokenSelect={setToToken}
+                    network={toNetwork}
+                  />
+                </div>
                 
-                <div className="flex-1 text-2xl font-semibold text-right">
+                <div className="flex-1 text-xl sm:text-2xl font-semibold text-right min-h-[48px] sm:min-h-auto flex items-center justify-end">
                   {isSimulating ? (
-                    <div className="animate-pulse bg-muted/20 h-8 rounded"></div>
+                    <div className="animate-pulse bg-muted/20 h-8 w-24 rounded"></div>
                   ) : (
                     simulation?.toAmount || "0.0"
                   )}
@@ -173,14 +179,17 @@ export function BridgeInterface() {
             <Button
               onClick={executeBridge}
               disabled={!canBridge || isExecuting}
-              className="w-full mt-6 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full mt-6 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 text-white font-semibold py-4 sm:py-4 h-12 sm:h-auto rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
+              size="lg"
             >
               {isExecuting ? (
                 <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
               ) : (
                 <ArrowDownUp className="w-4 h-4 mr-2" />
               )}
-              {isExecuting ? "Processing..." : "Bridge Tokens"}
+              <span className="text-base sm:text-base">
+                {isExecuting ? "Processing..." : "Bridge Tokens"}
+              </span>
             </Button>
 
             {!stellarWallet.isConnected && !sepoliaWallet.isConnected && (

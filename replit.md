@@ -1,8 +1,8 @@
-# StellarBridge - Cross-Chain DeFi Bridge
+# StellHydra - Cross-Chain DeFi Bridge
 
 ## Overview
 
-StellHydra is a full-stack web application that enables users to bridge cryptocurrencies between the Stellar and Ethereum (Sepolia testnet) networks. The application provides real-time DEX price comparisons, wallet integration, and transaction management with a modern, responsive UI built using React and Express.
+StellHydra is a full-stack web application that enables users to bridge cryptocurrencies between the Stellar and Ethereum (Sepolia testnet) networks. The application features a Jupiter Trails-inspired layout with a collapsible sidebar, real-time DEX price comparisons, wallet integration, and transaction management. Built with a mobile-first responsive design using React and Express.
 
 **Repository**: https://github.com/JulioMCruz/StellHydra
 
@@ -23,11 +23,14 @@ The application follows a modern full-stack architecture with clear separation b
 ## Key Components
 
 ### Frontend Architecture
+- **Layout Design**: Jupiter Trails-inspired layout with collapsible sidebar and main content area
 - **Component Library**: Uses shadcn/ui components built on Radix UI primitives
 - **Routing**: Wouter for lightweight client-side routing
 - **Styling**: Tailwind CSS with custom DeFi-themed color palette (stellar blue, ethereum purple)
+- **Responsive Design**: Mobile-first approach with touch-optimized interactions
 - **State Management**: TanStack Query for API calls and caching
 - **Wallet Integration**: Custom hooks for Stellar (Freighter) and Ethereum (MetaMask) wallet connections
+- **PWA Support**: Progressive Web App capabilities with manifest and mobile optimization
 
 ### Backend Architecture
 - **API Structure**: RESTful endpoints for transactions, DEX prices, and wallet management
@@ -98,5 +101,16 @@ The application is designed for deployment on Replit with the following setup:
 5. **Type Safety**: End-to-end TypeScript with shared schemas using Zod
 6. **Real-time Updates**: Polling-based updates for transaction status and price feeds
 7. **Responsive Design**: Mobile-first design with glass-morphism aesthetic for modern DeFi feel
+8. **Cross-Platform Compatibility**: PWA implementation for browser and mobile app-like experience
 
-The architecture supports easy scaling and maintenance while providing a robust foundation for cross-chain bridging functionality.
+## Recent Changes (July 27, 2025)
+
+- ✓ Implemented Jupiter Trails-inspired layout with collapsible sidebar
+- ✓ Created responsive main layout component with mobile header and desktop sidebar
+- ✓ Enhanced bridge interface with mobile-first responsive design
+- ✓ Added touch-optimized interactions for mobile devices
+- ✓ Implemented PWA capabilities with web app manifest
+- ✓ Fixed JSX syntax issues and improved code structure
+- ✓ Added proper mobile viewport settings and touch controls
+
+The architecture supports easy scaling and maintenance while providing a robust foundation for cross-chain bridging functionality across all devices and platforms.
