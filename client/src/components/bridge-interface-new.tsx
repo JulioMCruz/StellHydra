@@ -97,11 +97,11 @@ export function BridgeInterface({
   return (
     <div className="relative">
       {/* Integrated Swapper with Sidebar Layout */}
-      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative">
-        <CardContent className="p-0">
-          <div className="flex h-[600px]">
+      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative overflow-visible">
+        <CardContent className="p-0 overflow-visible">
+          <div className="flex h-[600px] overflow-visible">
             {/* Main Swapper Content */}
-            <div className="flex-1 p-4">
+            <div className="flex-1 p-4 overflow-visible">
               <div className="space-y-4">
 
 
