@@ -219,23 +219,69 @@ export function BridgeInterface({
                   </span>
                 </Button>
 
-                {/* Route Options and History Tabs */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="text-xs font-medium text-white mb-2">Route Options</h4>
-                    <div className="space-y-1">
-                      <div className="h-6 bg-white/10 rounded"></div>
-                      <div className="h-6 bg-white/10 rounded"></div>
-                      <div className="h-6 bg-white/10 rounded"></div>
+                {/* Transaction History */}
+                <div>
+                  <h4 className="text-sm font-medium text-white mb-3">Recent Transactions</h4>
+                  <div className="space-y-2">
+                    {/* Transaction Item 1 */}
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
+                          <ArrowDownUp className="w-3 h-3 text-stellar" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-medium text-white">Bridge XLM → ETH</div>
+                          <div className="text-xs text-muted-foreground">2 hours ago</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs font-medium text-green-400">Complete</div>
+                        <div className="text-xs text-muted-foreground">100 XLM</div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-medium text-white mb-2">History</h4>
-                    <div className="space-y-1">
-                      <div className="h-6 bg-white/10 rounded"></div>
-                      <div className="h-6 bg-white/10 rounded"></div>
-                      <div className="h-6 bg-white/10 rounded"></div>
+
+                    {/* Transaction Item 2 */}
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
+                          <ArrowDownUp className="w-3 h-3 text-ethereum" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-medium text-white">Bridge ETH → XLM</div>
+                          <div className="text-xs text-muted-foreground">1 day ago</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs font-medium text-green-400">Complete</div>
+                        <div className="text-xs text-muted-foreground">0.5 ETH</div>
+                      </div>
                     </div>
+
+                    {/* Transaction Item 3 */}
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                          <ArrowDownUp className="w-3 h-3 text-yellow-500" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-medium text-white">Bridge XLM → ETH</div>
+                          <div className="text-xs text-muted-foreground">3 days ago</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs font-medium text-yellow-400">Pending</div>
+                        <div className="text-xs text-muted-foreground">250 XLM</div>
+                      </div>
+                    </div>
+
+                    {/* View All Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full mt-2 text-xs text-muted-foreground hover:text-white hover:bg-white/10"
+                    >
+                      View All Transactions
+                    </Button>
                   </div>
                 </div>
 
