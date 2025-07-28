@@ -96,6 +96,18 @@ export function BridgeInterface({
 
   return (
     <div className="relative">
+      {/* Collapse Toggle Button - Outside main container */}
+      <button
+        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        className="absolute right-20 top-4 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
+      >
+        {isSidebarCollapsed ? (
+          <ArrowDownUp className="w-4 h-4 text-white" />
+        ) : (
+          <Route className="w-4 h-4 text-white" />
+        )}
+      </button>
+
       {/* Integrated Swapper with Sidebar Layout */}
       <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative overflow-visible">
         <CardContent className="p-0 overflow-visible">
@@ -228,17 +240,6 @@ export function BridgeInterface({
 
             {/* Right Sidebar Panel - Route Selection */}
             <div className={`${isSidebarCollapsed ? 'w-12' : 'w-80'} bg-stellar/10 rounded-r-xl border-l border-white/10 flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out relative`}>
-              {/* Collapse Toggle Button */}
-              <button
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="absolute -left-4 top-4 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
-              >
-                {isSidebarCollapsed ? (
-                  <ArrowDownUp className="w-4 h-4 text-white" />
-                ) : (
-                  <Route className="w-4 h-4 text-white" />
-                )}
-              </button>
 
               <div className={`${isSidebarCollapsed ? 'hidden' : 'block'} p-4 space-y-4 overflow-y-auto flex-1`}>
                 {/* Route Selection Dropdown */}
