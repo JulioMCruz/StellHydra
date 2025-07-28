@@ -22,8 +22,8 @@ export function MainLayout({ children }: MainLayoutProps) {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-stellar to-ethereum rounded-lg flex items-center justify-center">
-                <ArrowRightLeft className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img src="/stellhydra-logo.svg" alt="StellHydra" className="w-8 h-8" />
               </div>
               <div>
                 <span className="text-xl font-bold gradient-text">StellHydra</span>

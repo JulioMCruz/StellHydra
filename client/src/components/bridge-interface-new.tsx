@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowDownUp, Shield, Info } from "lucide-react";
+import { ArrowDownUp, Shield, Info, Rocket } from "lucide-react";
+import { SiEthereum } from "react-icons/si";
 import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
@@ -97,13 +98,21 @@ export function BridgeInterface({
                   <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
                   <div className="flex items-center justify-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
-                      <span className="text-xs font-bold text-stellar">S</span>
+                      {/* Stellar (XLM) Logo SVG - Official Design */}
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
                     </div>
                     <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
                     <div className="w-4 h-4 border border-white/30 rotate-45"></div>
                     <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
                     <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
-                      <span className="text-xs font-bold text-ethereum">E</span>
+                      {/* Ethereum Logo SVG */}
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" fill="#627eea"/>
+                      </svg>
                     </div>
                   </div>
                 </div>
@@ -275,7 +284,11 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <ArrowDownUp className="w-2 h-2 text-stellar" />
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
+                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
+                            </svg>
                           </div>
                           <div>
                             <div className="text-xs font-medium text-white">XLM → ETH</div>
@@ -294,7 +307,9 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-ethereum/20 flex items-center justify-center">
-                            <ArrowDownUp className="w-2 h-2 text-ethereum" />
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" fill="#627eea"/>
+                            </svg>
                           </div>
                           <div>
                             <div className="text-xs font-medium text-white">ETH → XLM</div>
@@ -312,8 +327,12 @@ export function BridgeInterface({
                     <div className="p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <div className="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                            <ArrowDownUp className="w-2 h-2 text-yellow-500" />
+                          <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
+                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
+                            </svg>
                           </div>
                           <div>
                             <div className="text-xs font-medium text-white">XLM → ETH</div>
