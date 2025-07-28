@@ -289,12 +289,7 @@ export function BridgeInterface({
                   <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
                   <div className="flex items-center justify-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
-                      {/* Stellar (XLM) Logo SVG - Official Design */}
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
+                      <img src="/stellar-logo.webp" alt="Stellar" className="w-6 h-6 object-contain" />
                     </div>
                     <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
                     <div className="w-4 h-4 border border-white/30 rotate-45"></div>
@@ -333,11 +328,7 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
-                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
-                            </svg>
+                            <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
                             <div className="text-xs font-medium text-white">XLM → ETH</div>
@@ -377,11 +368,7 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
-                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
-                            </svg>
+                            <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
                             <div className="text-xs font-medium text-white">XLM → ETH</div>

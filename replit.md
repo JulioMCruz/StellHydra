@@ -114,7 +114,8 @@ The application is designed for deployment on Replit with the following setup:
 - ✓ Added proper mobile viewport settings and touch controls
 - ✓ Integrated sidebar directly into bridge component (right-side placement)
 - ✓ Removed site-wide sidebar in favor of component-integrated route selection
-- ✓ Updated Stellar (XLM) logos throughout interface to match authentic design
+- ✓ Updated Stellar (XLM) logos throughout interface with authentic webp image
+- ✓ Replaced all SVG logos with official Stellar branding in chain visualization and transaction history
 - ✓ Created custom StellHydra app logo with cross-chain bridging theme
 - ✓ Converted route selection from static cards to interactive dropdown menu
 - ✓ Enhanced route selection with detailed descriptions and visual indicators
