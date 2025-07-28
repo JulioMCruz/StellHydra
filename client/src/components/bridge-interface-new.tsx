@@ -98,33 +98,11 @@ export function BridgeInterface({
       {/* Integrated Swapper with Sidebar Layout */}
       <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative">
         <CardContent className="p-0">
-          <div className="flex">
+          <div className="flex h-[600px]">
             {/* Main Swapper Content */}
             <div className="flex-1 p-4">
               <div className="space-y-4">
-                {/* Chain Visualization */}
-                <div className="text-center p-4 bg-background/20 rounded-lg border border-white/10">
-                  <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
-                  <div className="flex items-center justify-center space-x-4">
-                    <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
-                      {/* Stellar (XLM) Logo SVG - Official Design */}
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    </div>
-                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
-                    <div className="w-4 h-4 border border-white/30 rotate-45"></div>
-                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
-                    <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
-                      {/* Ethereum Logo SVG */}
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" fill="#627eea"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+
 
                 {/* From Section */}
                 <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
@@ -248,8 +226,8 @@ export function BridgeInterface({
             </div>
 
             {/* Right Sidebar Panel - Route Selection */}
-            <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10">
-              <div className="space-y-4">
+            <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10 flex flex-col h-full overflow-hidden">
+              <div className="space-y-4 overflow-y-auto flex-1">
                 {/* Route Selection Dropdown */}
                 <div>
                   <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
