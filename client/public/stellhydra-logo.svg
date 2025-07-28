@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="stellarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#14b6cd"/>
+    </linearGradient>
+    <linearGradient id="ethereumGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#627eea"/>
+      <stop offset="100%" stop-color="#4c6ef5"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer circle background -->
+  <circle cx="32" cy="32" r="30" fill="rgba(15,20,25,0.95)" stroke="url(#stellarGradient)" stroke-width="2"/>
+  
+  <!-- Stellar symbol (left side) -->
+  <g transform="translate(16, 32)">
+    <circle cx="0" cy="0" r="8" fill="none" stroke="url(#stellarGradient)" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="4" fill="none" stroke="url(#stellarGradient)" stroke-width="1"/>
+    <path d="M-6 -4L6 4M-6 4L6 -4" stroke="url(#stellarGradient)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Bridge connector (center) -->
+  <path d="M24 32L40 32" stroke="url(#stellarGradient)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M26 30L38 34" stroke="url(#ethereumGradient)" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M26 34L38 30" stroke="url(#ethereumGradient)" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Ethereum symbol (right side) -->
+  <g transform="translate(48, 32)">
+    <path d="M0 -8L-4 -2L0 0L4 -2Z" fill="url(#ethereumGradient)"/>
+    <path d="M0 2L-4 -1L0 8L4 -1Z" fill="url(#ethereumGradient)" opacity="0.8"/>
+  </g>
+  
+  <!-- Accent dots -->
+  <circle cx="32" cy="20" r="1" fill="url(#stellarGradient)"/>
+  <circle cx="32" cy="44" r="1" fill="url(#ethereumGradient)"/>
+</svg>
