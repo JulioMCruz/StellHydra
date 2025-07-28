@@ -306,6 +306,27 @@ export function BridgeInterface({
                   </DropdownMenu>
                 </div>
 
+                {/* Chain Visualization */}
+                <div className="text-center p-4 bg-background/20 rounded-lg border border-white/10">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
+                  <div className="flex items-center justify-center space-x-4">
+                    <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
+                      {/* Stellar (XLM) Logo SVG - Official Design */}
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                    </div>
+                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-4 h-4 border border-white/30 rotate-45"></div>
+                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
+                      <SiEthereum className="w-4 h-4 text-ethereum" />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Additional Info Panel */}
                 <div className="bg-background/20 rounded-lg p-3 border border-white/10">
                   <h4 className="text-xs font-medium text-white mb-2">Additional Info</h4>
