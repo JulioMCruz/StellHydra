@@ -23,7 +23,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 flex items-center justify-center">
-                <img src="/stellhydra-logo.svg" alt="StellHydra" className="w-8 h-8" />
+                <img src="/dragon-logo.jpeg" alt="StellHydra" className="w-8 h-8 rounded-lg object-cover" />
               </div>
               <div>
                 <span className="text-xl font-bold gradient-text">StellHydra</span>
