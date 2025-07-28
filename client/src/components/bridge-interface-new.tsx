@@ -231,9 +231,13 @@ export function BridgeInterface({
               {/* Collapse Toggle Button */}
               <button
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="absolute -left-3 top-4 z-10 w-6 h-6 bg-stellar/20 hover:bg-stellar/30 rounded-full border border-white/20 flex items-center justify-center transition-all duration-200"
+                className="absolute -left-4 top-4 z-10 w-8 h-8 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-lg border border-white/30 shadow-lg flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
               >
-                <ChevronDown className={`w-3 h-3 text-white transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-90' : '-rotate-90'}`} />
+                {isSidebarCollapsed ? (
+                  <ArrowDownUp className="w-4 h-4 text-white" />
+                ) : (
+                  <Route className="w-4 h-4 text-white" />
+                )}
               </button>
 
               <div className={`${isSidebarCollapsed ? 'hidden' : 'block'} p-4 space-y-4 overflow-y-auto flex-1`}>
