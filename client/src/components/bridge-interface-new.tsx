@@ -52,6 +52,7 @@ export function BridgeInterface({
   const [fromNetwork, setFromNetwork] = useState("stellar");
   const [toNetwork, setToNetwork] = useState("sepolia");
   const [selectedRoute, setSelectedRoute] = useState<"direct" | "multi-hop">("direct");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const { stellarWallet, sepoliaWallet } = useWallet();
   const { simulation, isSimulating, executeBridge, isExecuting } = useBridge({
@@ -226,8 +227,16 @@ export function BridgeInterface({
             </div>
 
             {/* Right Sidebar Panel - Route Selection */}
-            <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10 flex flex-col h-full overflow-hidden">
-              <div className="space-y-4 overflow-y-auto flex-1">
+            <div className={`${isSidebarCollapsed ? 'w-12' : 'w-80'} bg-stellar/10 rounded-r-xl border-l border-white/10 flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out relative`}>
+              {/* Collapse Toggle Button */}
+              <button
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="absolute -left-3 top-4 z-10 w-6 h-6 bg-stellar/20 hover:bg-stellar/30 rounded-full border border-white/20 flex items-center justify-center transition-all duration-200"
+              >
+                <ChevronDown className={`w-3 h-3 text-white transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-90' : '-rotate-90'}`} />
+              </button>
+
+              <div className={`${isSidebarCollapsed ? 'hidden' : 'block'} p-4 space-y-4 overflow-y-auto flex-1`}>
                 {/* Route Selection Dropdown */}
                 <div>
                   <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
@@ -384,6 +393,21 @@ export function BridgeInterface({
                   </div>
                 </div>
               </div>
+              
+              {/* Collapsed State Icon */}
+              {isSidebarCollapsed && (
+                <div className="p-2 flex flex-col items-center space-y-3 mt-12">
+                  <div className="w-6 h-6 rounded bg-stellar/20 flex items-center justify-center">
+                    <Route className="w-3 h-3 text-stellar" />
+                  </div>
+                  <div className="w-6 h-6 rounded bg-background/20 flex items-center justify-center">
+                    <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
+                  </div>
+                  <div className="w-6 h-6 rounded bg-ethereum/20 flex items-center justify-center">
+                    <SiEthereum className="w-3 h-3 text-ethereum" />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
