@@ -100,8 +100,9 @@ export function BridgeInterface({
                     <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
                       {/* Stellar (XLM) Logo SVG - Official Design */}
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
-                        <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 017.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
+                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
                       </svg>
                     </div>
                     <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
@@ -283,9 +284,10 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
-                              <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 017.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
+                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
                             </svg>
                           </div>
                           <div>
@@ -326,9 +328,10 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
-                              <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 717.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
+                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
+                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
                             </svg>
                           </div>
                           <div>
