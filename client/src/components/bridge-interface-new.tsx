@@ -231,7 +231,7 @@ export function BridgeInterface({
               {/* Collapse Toggle Button */}
               <button
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="absolute -left-4 top-4 z-10 w-8 h-8 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-lg border border-white/30 shadow-lg flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+                className="absolute -left-6 top-4 z-50 w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
               >
                 {isSidebarCollapsed ? (
                   <ArrowDownUp className="w-4 h-4 text-white" />
