@@ -345,7 +345,11 @@ export function BridgeInterface({
                             <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">XLM → ETH</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">2h ago</div>
                           </div>
                         </div>
@@ -366,7 +370,11 @@ export function BridgeInterface({
                             </svg>
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">ETH → XLM</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">1d ago</div>
                           </div>
                         </div>
@@ -385,7 +393,11 @@ export function BridgeInterface({
                             <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">XLM → ETH</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">3d ago</div>
                           </div>
                         </div>
