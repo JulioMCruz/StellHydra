@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowDownUp, Shield, Info } from "lucide-react";
+import { ArrowDownUp, Shield, Info, Rocket } from "lucide-react";
+import { SiEthereum } from "react-icons/si";
 import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
@@ -97,9 +98,10 @@ export function BridgeInterface({
                   <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
                   <div className="flex items-center justify-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
-                      {/* Stellar (XLM) Logo SVG */}
+                      {/* Stellar (XLM) Logo SVG - Official Design */}
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.283 1.851A10.154 10.154 0 0 0 1.846 12.002c.001 5.61 4.55 10.149 10.155 10.149a10.125 10.125 0 0 0 7.124-2.956l-3.473-3.47a5.055 5.055 0 0 1-3.651 1.514 5.048 5.048 0 0 1-5.051-5.051c0-2.789 2.262-5.052 5.051-5.052a5.057 5.057 0 0 1 3.651 1.515l3.473-3.471A10.125 10.125 0 0 0 12.283 1.851zm6.295 6.295-6.295 6.295-6.295-6.295L12.283 1.85l6.295 6.296z" fill="#00d4ff"/>
+                        <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
+                        <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 017.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
                       </svg>
                     </div>
                     <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
@@ -282,7 +284,8 @@ export function BridgeInterface({
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.283 1.851A10.154 10.154 0 0 0 1.846 12.002c.001 5.61 4.55 10.149 10.155 10.149a10.125 10.125 0 0 0 7.124-2.956l-3.473-3.47a5.055 5.055 0 0 1-3.651 1.514 5.048 5.048 0 0 1-5.051-5.051c0-2.789 2.262-5.052 5.051-5.052a5.057 5.057 0 0 1 3.651 1.515l3.473-3.471A10.125 10.125 0 0 0 12.283 1.851zm6.295 6.295-6.295 6.295-6.295-6.295L12.283 1.85l6.295 6.296z" fill="#00d4ff"/>
+                              <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
+                              <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 017.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
                             </svg>
                           </div>
                           <div>
@@ -324,7 +327,8 @@ export function BridgeInterface({
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.283 1.851A10.154 10.154 0 0 0 1.846 12.002c.001 5.61 4.55 10.149 10.155 10.149a10.125 10.125 0 0 0 7.124-2.956l-3.473-3.47a5.055 5.055 0 0 1-3.651 1.514 5.048 5.048 0 0 1-5.051-5.051c0-2.789 2.262-5.052 5.051-5.052a5.057 5.057 0 0 1 3.651 1.515l3.473-3.471A10.125 10.125 0 0 0 12.283 1.851zm6.295 6.295-6.295 6.295-6.295-6.295L12.283 1.85l6.295 6.296z" fill="#00d4ff"/>
+                              <path d="M12.281 1.85A10.15 10.15 0 001.855 12c0 5.61 4.539 10.15 10.15 10.15 2.807 0 5.348-1.139 7.186-2.977L15.718 15.7a5.049 5.049 0 01-3.581 1.485A5.056 5.056 0 017.08 12.13a5.056 5.056 0 015.057-5.056 5.049 5.049 0 013.581 1.485l3.473-3.473A10.118 10.118 0 0012.281 1.85z" fill="#14b6cd"/>
+                              <path d="M12.281 7.074a5.056 5.056 0 00-5.056 5.056 5.056 5.056 0 005.056 5.056 5.049 5.049 0 003.581-1.485l1.462 1.462a7.08 7.08 0 01-5.043 2.089 7.112 7.112 0 01-7.112-7.112 7.112 7.112 0 717.112-7.112 7.08 7.08 0 015.043 2.089l-1.462 1.462a5.049 5.049 0 00-3.581-1.485z" fill="#00d4ff"/>
                             </svg>
                           </div>
                           <div>
