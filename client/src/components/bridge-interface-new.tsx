@@ -2,8 +2,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowDownUp, Shield, Info, Rocket } from "lucide-react";
+import { ArrowDownUp, Shield, Info, Rocket, ChevronDown, Route, Zap } from "lucide-react";
 import { SiEthereum } from "react-icons/si";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
@@ -43,6 +51,7 @@ export function BridgeInterface({
   const [toToken, setToToken] = useState("ETH");
   const [fromNetwork, setFromNetwork] = useState("stellar");
   const [toNetwork, setToNetwork] = useState("sepolia");
+  const [selectedRoute, setSelectedRoute] = useState<"direct" | "multi-hop">("direct");
 
   const { stellarWallet, sepoliaWallet } = useWallet();
   const { simulation, isSimulating, executeBridge, isExecuting } = useBridge({
@@ -241,19 +250,60 @@ export function BridgeInterface({
             {/* Right Sidebar Panel - Route Selection */}
             <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10">
               <div className="space-y-4">
-                {/* Route Selection Header */}
+                {/* Route Selection Dropdown */}
                 <div>
                   <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
-                  <div className="space-y-2">
-                    <div className="p-2 bg-stellar/20 rounded-lg border border-stellar/30">
-                      <div className="text-xs text-stellar font-medium">Direct Bridge</div>
-                      <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
-                    </div>
-                    <div className="p-2 glass-card rounded-lg border border-white/10 hover:bg-white/5 cursor-pointer">
-                      <div className="text-xs text-white">Multi-hop</div>
-                      <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
-                    </div>
-                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between bg-stellar/10 border-stellar/30 hover:bg-stellar/20 text-white"
+                      >
+                        <div className="flex items-center space-x-2">
+                          {selectedRoute === "direct" ? (
+                            <Route className="w-4 h-4 text-stellar" />
+                          ) : (
+                            <Zap className="w-4 h-4 text-ethereum" />
+                          )}
+                          <div className="text-left">
+                            <div className="text-xs font-medium">
+                              {selectedRoute === "direct" ? "Direct Bridge" : "Multi-hop"}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {selectedRoute === "direct" ? "Stellar → Ethereum" : "Via DEX Aggregator"}
+                            </div>
+                          </div>
+                        </div>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-72 bg-background/95 backdrop-blur-sm border-white/10">
+                      <DropdownMenuLabel className="text-white">Route Options</DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-white/10" />
+                      <DropdownMenuItem
+                        onClick={() => setSelectedRoute("direct")}
+                        className="focus:bg-stellar/20 focus:text-white cursor-pointer"
+                      >
+                        <Route className="w-4 h-4 mr-3 text-stellar" />
+                        <div>
+                          <div className="font-medium text-white">Direct Bridge</div>
+                          <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
+                          <div className="text-xs text-green-400 mt-1">Fastest • Lower fees</div>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setSelectedRoute("multi-hop")}
+                        className="focus:bg-ethereum/20 focus:text-white cursor-pointer"
+                      >
+                        <Zap className="w-4 h-4 mr-3 text-ethereum" />
+                        <div>
+                          <div className="font-medium text-white">Multi-hop</div>
+                          <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
+                          <div className="text-xs text-blue-400 mt-1">Better rates • More liquidity</div>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
                 {/* Additional Info Panel */}
