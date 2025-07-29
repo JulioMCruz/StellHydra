@@ -200,4 +200,20 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Export singleton instance
+function createStorage() {
+  if (process.env.DATABASE_URL) {
+    try {
+      const { DatabaseStorage } = require('./database-storage');
+      console.log('Using database storage with Supabase');
+      return new DatabaseStorage(process.env.DATABASE_URL);
+    } catch (error) {
+      console.warn('Failed to initialize database storage, falling back to memory storage:', error);
+      return new MemStorage();
+    }
+  }
+  console.log('Using memory storage');
+  return new MemStorage();
+}
+
+export const storage = createStorage();
