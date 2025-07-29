@@ -111,24 +111,12 @@ export function BridgeInterface({
 
   return (
     <div className="relative">
-      {/* Collapse Toggle Button - Outside main container */}
-      <button
-        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        className="absolute right-20 top-4 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
-      >
-        {isSidebarCollapsed ? (
-          <ArrowDownUp className="w-4 h-4 text-white" />
-        ) : (
-          <Route className="w-4 h-4 text-white" />
-        )}
-      </button>
-
       {/* Integrated Swapper with Sidebar Layout */}
       <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative overflow-visible">
         <CardContent className="p-0 overflow-visible">
           <div className="flex h-[600px] overflow-visible">
             {/* Main Swapper Content */}
-            <div className="flex-1 p-4 overflow-visible">
+            <div className="flex-1 p-4 overflow-visible relative">
               <div className="space-y-4">
                 {/* Header Section */}
                 <div className="text-center mb-6">
@@ -267,6 +255,20 @@ export function BridgeInterface({
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Collapse Toggle Button - Between panels */}
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="absolute -left-5 top-1/2 -translate-y-1/2 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
+              >
+                {isSidebarCollapsed ? (
+                  <ArrowDownUp className="w-4 h-4 text-white" />
+                ) : (
+                  <Route className="w-4 h-4 text-white" />
+                )}
+              </button>
             </div>
 
             {/* Right Sidebar Panel - Route Selection */}
