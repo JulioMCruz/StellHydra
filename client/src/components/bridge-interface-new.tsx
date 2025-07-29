@@ -54,6 +54,13 @@ export function BridgeInterface({
   const [selectedRoute, setSelectedRoute] = useState<"direct" | "multi-hop">("direct");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // Enforce same network in swap mode
+  useEffect(() => {
+    if (isSidebarCollapsed && fromNetwork !== toNetwork) {
+      setToNetwork(fromNetwork);
+    }
+  }, [isSidebarCollapsed, fromNetwork, toNetwork]);
+
   const { stellarWallet, sepoliaWallet } = useWallet();
   const { simulation, isSimulating, executeBridge, isExecuting } = useBridge({
     fromToken,
@@ -65,11 +72,19 @@ export function BridgeInterface({
   });
 
   const handleSwapNetworks = () => {
-    setFromToken(toToken);
-    setToToken(fromToken);
-    setFromNetwork(toNetwork);
-    setToNetwork(fromNetwork);
-    setFromAmount("");
+    if (isSidebarCollapsed) {
+      // In swap mode, only swap tokens (same network)
+      setFromToken(toToken);
+      setToToken(fromToken);
+      setFromAmount("");
+    } else {
+      // In bridge mode, swap tokens and networks
+      setFromToken(toToken);
+      setToToken(fromToken);
+      setFromNetwork(toNetwork);
+      setToNetwork(fromNetwork);
+      setFromAmount("");
+    }
   };
 
   const handleMaxClick = () => {
@@ -115,12 +130,26 @@ export function BridgeInterface({
             {/* Main Swapper Content */}
             <div className="flex-1 p-4 overflow-visible">
               <div className="space-y-4">
+                {/* Header Section */}
+                <div className="text-center mb-6">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-stellar to-ethereum bg-clip-text text-transparent">
+                    {isSidebarCollapsed ? 'Token Swap' : 'Cross-Chain Bridge'}
+                  </h1>
+                  <p className="text-muted-foreground mt-2">
+                    {isSidebarCollapsed 
+                      ? 'Swap tokens within the same network' 
+                      : 'Bridge assets between Stellar and Ethereum networks'
+                    }
+                  </p>
+                </div>
 
 
                 {/* From Section */}
                 <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-muted-foreground">From</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {isSidebarCollapsed ? 'From' : `From (${fromNetwork === 'stellar' ? 'Stellar' : 'Sepolia'})`}
+                    </label>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <span>Balance: {fromNetwork === "stellar" ? stellarWallet.balance : sepoliaWallet.balance || "0"}</span>
                       <Button 
@@ -169,7 +198,9 @@ export function BridgeInterface({
                 {/* To Section */}
                 <div className={`glass-card rounded-lg p-3 border ${toNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-muted-foreground">To</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {isSidebarCollapsed ? 'To' : `To (${toNetwork === 'stellar' ? 'Stellar' : 'Sepolia'})`}
+                    </label>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <span>Balance: {toNetwork === "stellar" ? stellarWallet.balance : sepoliaWallet.balance || "0"}</span>
                     </div>
@@ -212,7 +243,7 @@ export function BridgeInterface({
                   </div>
                 )}
 
-                {/* Bridge Button - Compact */}
+                {/* Action Button - Compact */}
                 <Button
                   onClick={executeBridge}
                   disabled={!canBridge || isExecuting}
@@ -224,7 +255,7 @@ export function BridgeInterface({
                     <ArrowDownUp className="w-4 h-4 mr-2" />
                   )}
                   <span className="text-sm">
-                    {isExecuting ? "Processing..." : "Bridge"}
+                    {isExecuting ? (isSidebarCollapsed ? "Swapping..." : "Bridging...") : (isSidebarCollapsed ? "Swap" : "Bridge")}
                   </span>
                 </Button>
 
@@ -232,7 +263,7 @@ export function BridgeInterface({
 
                 {!stellarWallet.isConnected && !sepoliaWallet.isConnected && (
                   <p className="text-center text-xs text-muted-foreground mt-3">
-                    Connect wallet to bridge
+                    Connect wallet to {isSidebarCollapsed ? 'swap' : 'bridge'}
                   </p>
                 )}
               </div>
