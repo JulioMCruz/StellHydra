@@ -261,7 +261,7 @@ export function BridgeInterface({
             <div className="relative flex-shrink-0">
               <button
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="absolute -left-5 top-1/2 -translate-y-1/2 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
+                className="absolute -left-5 top-6 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
               >
                 {isSidebarCollapsed ? (
                   <ArrowDownUp className="w-4 h-4 text-white" />
