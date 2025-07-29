@@ -9,9 +9,9 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/stellhydra-logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/dragon-logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {

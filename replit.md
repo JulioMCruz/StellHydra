@@ -103,7 +103,24 @@ The application is designed for deployment on Replit with the following setup:
 7. **Responsive Design**: Mobile-first design with glass-morphism aesthetic for modern DeFi feel
 8. **Cross-Platform Compatibility**: PWA implementation for browser and mobile app-like experience
 
-## Recent Changes (July 27, 2025)
+## Recent Changes (July 29, 2025)
+
+### Database Integration
+- ✓ Connected Supabase PostgreSQL database for persistent data storage
+- ✓ Generated database migrations for transactions, dex_prices, and wallets tables
+- ✓ Implemented DatabaseStorage class with full CRUD operations
+- ✓ Added intelligent storage selection (database when available, memory as fallback)
+- ✓ Set up schema-driven development with Drizzle ORM and Zod validation
+
+### Interface Enhancements
+- ✓ Implemented swap vs bridge mode toggle functionality
+- ✓ Added dynamic headers and descriptions based on sidebar state
+- ✓ Created smart network enforcement (same network in swap mode)
+- ✓ Updated action buttons with contextual "Swap" vs "Bridge" text
+- ✓ Replaced all XLM/ETH text with authentic cryptocurrency logos
+- ✓ Positioned toggle button optimally on right edge between panels
+
+## Previous Changes (July 28, 2025)
 
 - ✓ Implemented Jupiter Trails-inspired layout with collapsible sidebar
 - ✓ Created responsive main layout component with mobile header and desktop sidebar
@@ -114,7 +131,11 @@ The application is designed for deployment on Replit with the following setup:
 - ✓ Added proper mobile viewport settings and touch controls
 - ✓ Integrated sidebar directly into bridge component (right-side placement)
 - ✓ Removed site-wide sidebar in favor of component-integrated route selection
-- ✓ Added route selection panel with Direct Bridge and Multi-hop options
-- ✓ Included network status and volume statistics in integrated sidebar
+- ✓ Updated Stellar (XLM) logos throughout interface with authentic webp image
+- ✓ Replaced all SVG logos with official Stellar branding in chain visualization and transaction history
+- ✓ Created custom StellHydra app logo with cross-chain bridging theme
+- ✓ Converted route selection from static cards to interactive dropdown menu
+- ✓ Enhanced route selection with detailed descriptions and visual indicators
+- ✓ Added proper favicons and PWA manifest icons for branding
 
 The architecture supports easy scaling and maintenance while providing a robust foundation for cross-chain bridging functionality across all devices and platforms.

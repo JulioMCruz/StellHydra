@@ -2,8 +2,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowDownUp, Shield, Info, Rocket } from "lucide-react";
+import { ArrowDownUp, Shield, Info, Rocket, ChevronDown, Route, Zap } from "lucide-react";
 import { SiEthereum } from "react-icons/si";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TokenSelector } from "./token-selector";
 import { useBridge } from "@/hooks/use-bridge";
 import { useWallet } from "@/hooks/use-wallet";
@@ -43,6 +51,15 @@ export function BridgeInterface({
   const [toToken, setToToken] = useState("ETH");
   const [fromNetwork, setFromNetwork] = useState("stellar");
   const [toNetwork, setToNetwork] = useState("sepolia");
+  const [selectedRoute, setSelectedRoute] = useState<"direct" | "multi-hop">("direct");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Enforce same network in swap mode
+  useEffect(() => {
+    if (isSidebarCollapsed && fromNetwork !== toNetwork) {
+      setToNetwork(fromNetwork);
+    }
+  }, [isSidebarCollapsed, fromNetwork, toNetwork]);
 
   const { stellarWallet, sepoliaWallet } = useWallet();
   const { simulation, isSimulating, executeBridge, isExecuting } = useBridge({
@@ -55,11 +72,19 @@ export function BridgeInterface({
   });
 
   const handleSwapNetworks = () => {
-    setFromToken(toToken);
-    setToToken(fromToken);
-    setFromNetwork(toNetwork);
-    setToNetwork(fromNetwork);
-    setFromAmount("");
+    if (isSidebarCollapsed) {
+      // In swap mode, only swap tokens (same network)
+      setFromToken(toToken);
+      setToToken(fromToken);
+      setFromAmount("");
+    } else {
+      // In bridge mode, swap tokens and networks
+      setFromToken(toToken);
+      setToToken(fromToken);
+      setFromNetwork(toNetwork);
+      setToNetwork(fromNetwork);
+      setFromAmount("");
+    }
   };
 
   const handleMaxClick = () => {
@@ -87,40 +112,32 @@ export function BridgeInterface({
   return (
     <div className="relative">
       {/* Integrated Swapper with Sidebar Layout */}
-      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative">
-        <CardContent className="p-0">
-          <div className="flex">
+      <Card className="glass-card rounded-xl border border-white/10 w-full max-w-4xl mx-auto relative overflow-visible">
+        <CardContent className="p-0 overflow-visible">
+          <div className="flex h-[600px] overflow-visible">
             {/* Main Swapper Content */}
-            <div className="flex-1 p-4">
+            <div className="flex-1 p-4 overflow-visible relative">
               <div className="space-y-4">
-                {/* Chain Visualization */}
-                <div className="text-center p-4 bg-background/20 rounded-lg border border-white/10">
-                  <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
-                  <div className="flex items-center justify-center space-x-4">
-                    <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
-                      {/* Stellar (XLM) Logo SVG - Official Design */}
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1.5"/>
-                        <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    </div>
-                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
-                    <div className="w-4 h-4 border border-white/30 rotate-45"></div>
-                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
-                    <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
-                      {/* Ethereum Logo SVG */}
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" fill="#627eea"/>
-                      </svg>
-                    </div>
-                  </div>
+                {/* Header Section */}
+                <div className="text-center mb-6">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-stellar to-ethereum bg-clip-text text-transparent">
+                    {isSidebarCollapsed ? 'Token Swap' : 'Cross-Chain Bridge'}
+                  </h1>
+                  <p className="text-muted-foreground mt-2">
+                    {isSidebarCollapsed 
+                      ? 'Swap tokens within the same network' 
+                      : 'Bridge assets between Stellar and Ethereum networks'
+                    }
+                  </p>
                 </div>
+
 
                 {/* From Section */}
                 <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-muted-foreground">From</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {isSidebarCollapsed ? 'From' : `From (${fromNetwork === 'stellar' ? 'Stellar' : 'Sepolia'})`}
+                    </label>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <span>Balance: {fromNetwork === "stellar" ? stellarWallet.balance : sepoliaWallet.balance || "0"}</span>
                       <Button 
@@ -169,7 +186,9 @@ export function BridgeInterface({
                 {/* To Section */}
                 <div className={`glass-card rounded-lg p-3 border ${toNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-muted-foreground">To</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      {isSidebarCollapsed ? 'To' : `To (${toNetwork === 'stellar' ? 'Stellar' : 'Sepolia'})`}
+                    </label>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <span>Balance: {toNetwork === "stellar" ? stellarWallet.balance : sepoliaWallet.balance || "0"}</span>
                     </div>
@@ -212,7 +231,7 @@ export function BridgeInterface({
                   </div>
                 )}
 
-                {/* Bridge Button - Compact */}
+                {/* Action Button - Compact */}
                 <Button
                   onClick={executeBridge}
                   disabled={!canBridge || isExecuting}
@@ -224,7 +243,7 @@ export function BridgeInterface({
                     <ArrowDownUp className="w-4 h-4 mr-2" />
                   )}
                   <span className="text-sm">
-                    {isExecuting ? "Processing..." : "Bridge"}
+                    {isExecuting ? (isSidebarCollapsed ? "Swapping..." : "Bridging...") : (isSidebarCollapsed ? "Swap" : "Bridge")}
                   </span>
                 </Button>
 
@@ -232,26 +251,98 @@ export function BridgeInterface({
 
                 {!stellarWallet.isConnected && !sepoliaWallet.isConnected && (
                   <p className="text-center text-xs text-muted-foreground mt-3">
-                    Connect wallet to bridge
+                    Connect wallet to {isSidebarCollapsed ? 'swap' : 'bridge'}
                   </p>
                 )}
               </div>
             </div>
 
+            {/* Collapse Toggle Button - Between panels */}
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="absolute -left-5 top-6 z-[100] w-10 h-10 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 rounded-xl border-2 border-white/40 shadow-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm hover:scale-110"
+              >
+                {isSidebarCollapsed ? (
+                  <ArrowDownUp className="w-4 h-4 text-white" />
+                ) : (
+                  <Route className="w-4 h-4 text-white" />
+                )}
+              </button>
+            </div>
+
             {/* Right Sidebar Panel - Route Selection */}
-            <div className="w-80 bg-stellar/10 rounded-r-xl p-4 border-l border-white/10">
-              <div className="space-y-4">
-                {/* Route Selection Header */}
+            <div className={`${isSidebarCollapsed ? 'w-12' : 'w-80'} bg-stellar/10 rounded-r-xl border-l border-white/10 flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out relative`}>
+
+              <div className={`${isSidebarCollapsed ? 'hidden' : 'block'} p-4 space-y-4 overflow-y-auto flex-1`}>
+                {/* Route Selection Dropdown */}
                 <div>
                   <h3 className="text-sm font-medium text-white mb-2">Select Route</h3>
-                  <div className="space-y-2">
-                    <div className="p-2 bg-stellar/20 rounded-lg border border-stellar/30">
-                      <div className="text-xs text-stellar font-medium">Direct Bridge</div>
-                      <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between bg-stellar/10 border-stellar/30 hover:bg-stellar/20 text-white"
+                      >
+                        <div className="flex items-center space-x-2">
+                          {selectedRoute === "direct" ? (
+                            <Route className="w-4 h-4 text-stellar" />
+                          ) : (
+                            <Zap className="w-4 h-4 text-ethereum" />
+                          )}
+                          <div className="text-left">
+                            <div className="text-xs font-medium">
+                              {selectedRoute === "direct" ? "Direct Bridge" : "Multi-hop"}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {selectedRoute === "direct" ? "Stellar → Ethereum" : "Via DEX Aggregator"}
+                            </div>
+                          </div>
+                        </div>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-72 bg-background/95 backdrop-blur-sm border-white/10">
+                      <DropdownMenuLabel className="text-white">Route Options</DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-white/10" />
+                      <DropdownMenuItem
+                        onClick={() => setSelectedRoute("direct")}
+                        className="focus:bg-stellar/20 focus:text-white cursor-pointer"
+                      >
+                        <Route className="w-4 h-4 mr-3 text-stellar" />
+                        <div>
+                          <div className="font-medium text-white">Direct Bridge</div>
+                          <div className="text-xs text-muted-foreground">Stellar → Ethereum</div>
+                          <div className="text-xs text-green-400 mt-1">Fastest • Lower fees</div>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setSelectedRoute("multi-hop")}
+                        className="focus:bg-ethereum/20 focus:text-white cursor-pointer"
+                      >
+                        <Zap className="w-4 h-4 mr-3 text-ethereum" />
+                        <div>
+                          <div className="font-medium text-white">Multi-hop</div>
+                          <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
+                          <div className="text-xs text-blue-400 mt-1">Better rates • More liquidity</div>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Chain Visualization */}
+                <div className="text-center p-4 bg-background/20 rounded-lg border border-white/10">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Chain</div>
+                  <div className="flex items-center justify-center space-x-4">
+                    <div className="w-8 h-8 rounded-full bg-stellar/20 flex items-center justify-center">
+                      <img src="/stellar-logo.webp" alt="Stellar" className="w-6 h-6 object-contain" />
                     </div>
-                    <div className="p-2 glass-card rounded-lg border border-white/10 hover:bg-white/5 cursor-pointer">
-                      <div className="text-xs text-white">Multi-hop</div>
-                      <div className="text-xs text-muted-foreground">Via DEX Aggregator</div>
+                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-4 h-4 border border-white/30 rotate-45"></div>
+                    <ArrowDownUp className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-8 h-8 rounded-full bg-ethereum/20 flex items-center justify-center">
+                      <SiEthereum className="w-4 h-4 text-ethereum" />
                     </div>
                   </div>
                 </div>
@@ -284,14 +375,14 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
-                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
-                            </svg>
+                            <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">XLM → ETH</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">2h ago</div>
                           </div>
                         </div>
@@ -312,7 +403,11 @@ export function BridgeInterface({
                             </svg>
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">ETH → XLM</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">1d ago</div>
                           </div>
                         </div>
@@ -328,14 +423,14 @@ export function BridgeInterface({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
-                              <circle cx="12" cy="12" r="10" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <circle cx="12" cy="12" r="6" fill="none" stroke="#00d4ff" strokeWidth="1"/>
-                              <path d="M4 8L20 16M4 16L20 8" stroke="#00d4ff" strokeWidth="1" strokeLinecap="round"/>
-                            </svg>
+                            <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-white">XLM → ETH</div>
+                            <div className="text-xs font-medium text-white flex items-center space-x-1">
+                              <img src="/stellar-logo.webp" alt="XLM" className="w-3 h-3 object-contain" />
+                              <span>→</span>
+                              <img src="/ethereum-logo.svg" alt="ETH" className="w-3 h-3 object-contain" />
+                            </div>
                             <div className="text-xs text-muted-foreground">3d ago</div>
                           </div>
                         </div>
@@ -348,6 +443,21 @@ export function BridgeInterface({
                   </div>
                 </div>
               </div>
+              
+              {/* Collapsed State Icon */}
+              {isSidebarCollapsed && (
+                <div className="p-2 flex flex-col items-center space-y-3 mt-12">
+                  <div className="w-6 h-6 rounded bg-stellar/20 flex items-center justify-center">
+                    <Route className="w-3 h-3 text-stellar" />
+                  </div>
+                  <div className="w-6 h-6 rounded bg-background/20 flex items-center justify-center">
+                    <img src="/stellar-logo.webp" alt="Stellar" className="w-4 h-4 object-contain" />
+                  </div>
+                  <div className="w-6 h-6 rounded bg-ethereum/20 flex items-center justify-center">
+                    <SiEthereum className="w-3 h-3 text-ethereum" />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

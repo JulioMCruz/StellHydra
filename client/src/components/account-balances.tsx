@@ -18,8 +18,8 @@ export function AccountBalances() {
           <div className="p-4 glass-card rounded-lg border border-stellar/10">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-stellar flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">XLM</span>
+                <div className="w-6 h-6 rounded-full bg-stellar/20 flex items-center justify-center">
+                  <img src="/stellar-logo.webp" alt="XLM" className="w-4 h-4 object-contain" />
                 </div>
                 <span className="font-medium">Stellar</span>
               </div>
@@ -39,8 +39,8 @@ export function AccountBalances() {
           <div className="p-4 glass-card rounded-lg border border-ethereum/10">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-ethereum flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">ETH</span>
+                <div className="w-6 h-6 rounded-full bg-ethereum/20 flex items-center justify-center">
+                  <img src="/ethereum-logo.svg" alt="ETH" className="w-4 h-4 object-contain" />
                 </div>
                 <span className="font-medium">Sepolia</span>
               </div>
