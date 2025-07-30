@@ -1,0 +1,19 @@
+[package]
+name = "stellhydra-test"
+version = "0.1.0"
+edition = "2021"
+authors = ["StellHydra Team <team@stellhydra.com>"]
+license = "MIT"
+description = "Simple test contract for StellHydra deployment verification"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
+[features]
+testutils = ["soroban-sdk/testutils"]
