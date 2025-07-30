@@ -1,0 +1,16 @@
+# Stellar Testnet Configuration
+network_passphrase = "Test SDF Network ; September 2015"
+rpc_url = "https://soroban-testnet.stellar.org"
+network_url = "https://soroban-testnet.stellar.org"
+explorer_url = "https://testnet.stellarchain.io"
+
+# Contract deployment settings
+gas_limit = 100000
+fee_rate = 100
+
+# Test accounts (for demo purposes only - replace with your own)
+# You can generate new keypairs with: soroban keys generate test-account
+default_account = "test-account"
+
+# Contract limits
+max_ttl_ledgers = 518400  # ~30 days

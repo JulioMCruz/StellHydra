@@ -1,0 +1,15 @@
+# Stellar Mainnet Configuration
+network_passphrase = "Public Global Stellar Network ; September 2015"
+rpc_url = "https://soroban-rpc.stellar.org"
+network_url = "https://soroban-rpc.stellar.org"
+explorer_url = "https://stellarchain.io"
+
+# Contract deployment settings
+gas_limit = 100000
+fee_rate = 100
+
+# Production account (set via environment variable)
+default_account = "production-account"
+
+# Contract limits
+max_ttl_ledgers = 518400  # ~30 days
