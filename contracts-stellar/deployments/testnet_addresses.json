@@ -1,0 +1,42 @@
+{
+  "network": "testnet",
+  "deployed_at": "2024-07-30T00:00:00Z",
+  "deployer_address": "GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS",
+  "contracts": {
+    "simple-test": {
+      "contract_id": "READY_FOR_DEPLOYMENT",
+      "wasm_hash": "1fd32eb24ec533df654525799d69a9ca5b71bc4241766a1976319703f70f06f7",
+      "description": "Simple test contract for deployment verification",
+      "status": "built"
+    },
+    "test-contract": {
+      "contract_id": "PENDING_DEPLOYMENT",
+      "description": "Enhanced test contract with data storage and events",
+      "status": "needs_fixes"
+    },
+    "price-oracle": {
+      "contract_id": "PENDING_DEPLOYMENT", 
+      "description": "Price oracle for DEX aggregation",
+      "status": "needs_fixes"
+    },
+    "liquidity-pool": {
+      "contract_id": "PENDING_DEPLOYMENT",
+      "description": "AMM liquidity pool contract",
+      "status": "needs_fixes"
+    },
+    "router": {
+      "contract_id": "PENDING_DEPLOYMENT",
+      "description": "DEX aggregation router",
+      "status": "needs_fixes"
+    },
+    "bridge-contract": {
+      "contract_id": "PENDING_DEPLOYMENT",
+      "description": "Cross-chain bridge contract",
+      "status": "needs_fixes"
+    }
+  },
+  "deployment_notes": {
+    "simple-test": "Successfully built and installed on testnet. Wasm hash available for deployment.",
+    "others": "Contracts need Soroban SDK compatibility fixes before deployment."
+  }
+}

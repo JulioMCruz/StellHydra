@@ -1,14 +1,12 @@
 [workspace]
 resolver = "2"
 members = [
-    "test-contract",
-    "bridge-contract", 
-    "price-oracle",
+    "stellar-eth-escrow",
+    "simple-test",
 ]
 
 [workspace.dependencies]
-soroban-sdk = "21.0.0"
-soroban-token-contract = "21.0.0"
+soroban-sdk = "22"
 
 [profile.release]
 opt-level = "z"

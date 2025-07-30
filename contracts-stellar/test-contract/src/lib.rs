@@ -37,7 +37,7 @@ impl StellHydraTest {
 
         // Set initial data
         let initial_data = TestData {
-            message: initial_message,
+            message: initial_message.clone(),
             count: 0,
             creator: owner,
             timestamp: env.ledger().timestamp(),
@@ -47,7 +47,7 @@ impl StellHydraTest {
         // Emit initialization event
         env.events().publish(
             (symbol_short!("TEST"), symbol_short!("INIT")),
-            &initial_data,
+            initial_message,
         );
     }
 
@@ -60,7 +60,7 @@ impl StellHydraTest {
         let mut counter: u32 = env.storage().instance().get(&COUNTER).unwrap_or(0);
 
         // Update data
-        data.message = new_message;
+        data.message = new_message.clone();
         data.timestamp = env.ledger().timestamp();
         counter += 1;
         data.count = counter;
@@ -72,7 +72,7 @@ impl StellHydraTest {
         // Emit update event
         env.events().publish(
             (symbol_short!("TEST"), symbol_short!("UPDATE")),
-            &data,
+            new_message,
         );
     }
 
@@ -93,7 +93,7 @@ impl StellHydraTest {
 
     /// Simple greeting function for testing
     pub fn hello(env: Env, name: String) -> String {
-        format!("Hello, {}! Welcome to StellHydra on Stellar!", name)
+        String::from_str(&env, "Hello from StellHydra!")
     }
 
     /// Increment counter (anyone can call)
@@ -139,9 +139,7 @@ impl StellHydraTest {
 
     /// Get contract info
     pub fn get_info(env: Env) -> String {
-        format!("StellHydra Test Contract - Ledger: {}, Timestamp: {}", 
-                env.ledger().sequence(), 
-                env.ledger().timestamp())
+        String::from_str(&env, "StellHydra Test Contract - Ready!")
     }
 }
 

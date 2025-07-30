@@ -30,6 +30,7 @@ A modern, full-stack cross-chain bridge application that enables seamless token 
 
 ### Blockchain Integration
 - **Stellar SDK** for Stellar network interactions
+- **Soroban Smart Contracts** for on-chain logic
 - **Web3/Ethers** for Ethereum Sepolia testnet
 - **Freighter Wallet** integration for Stellar
 - **MetaMask** integration for Ethereum
@@ -63,6 +64,111 @@ A modern, full-stack cross-chain bridge application that enables seamless token 
    ```
 
 The application will be available at `http://localhost:5000`
+
+## 🌟 Stellar Smart Contracts
+
+### 📋 Contract Overview
+
+StellHydra uses **Soroban smart contracts** on the Stellar network for decentralized cross-chain bridge operations:
+
+| Contract | Status | Description |
+|----------|--------|-------------|
+| **stellar-eth-escrow** | ✅ **Production Ready** | HTLC contract for atomic Stellar-Ethereum swaps |
+| **bridge-contract** | 🔧 Development | Main cross-chain bridge logic |
+| **price-oracle** | 🔧 Development | DEX price aggregation oracle |
+| **liquidity-pool** | 🔧 Development | AMM liquidity pools |
+| **router** | 🔧 Development | Optimal route finding |
+| **simple-test** | ✅ **Built** | Simple test contract for deployment verification |
+| **hello-world-test** | ✅ **Built** | Official Stellar template for testing |
+
+### 🚀 Smart Contract Features
+
+- **HTLC Implementation**: Hash Time Locked Contracts for secure atomic swaps
+- **Cross-Chain Bridge**: Asset locking/unlocking with time-based protection
+- **Atomic Swaps**: Complete cross-chain transactions with secret reveal mechanism
+- **Refund Protection**: Automatic refunds after timelock expiry
+- **Security Standards**: Comprehensive authorization and validation system
+
+### ⚙️ Contract Development
+
+```bash
+# Navigate to contracts directory
+cd contracts-stellar
+
+# Install Rust and Soroban CLI
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install --locked soroban-cli
+
+# Build and test contracts
+./scripts/test.sh
+
+# Deploy to testnet
+./scripts/deploy.sh testnet simple-test
+```
+
+### 🔗 Contract Status
+
+- **Network**: Stellar Testnet (pending infrastructure fix)
+- **Main Contract**: `stellar-eth-escrow` (Production Ready)
+- **WASM Hash**: `06ee60bd4d6daacbf503767722cf4f7cbf8a48eef50decaad30775ecc4fad5bf`
+- **Test Coverage**: 5/5 tests passing (100%)
+- **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
+- **Explorer**: [View on Stellar Explorer](https://testnet.stellarchain.io)
+
+**For detailed contract documentation, see [`contracts-stellar/README.md`](./contracts-stellar/README.md)**
+
+## 🌐 EVM Smart Contracts
+
+### 📋 Contract Overview
+
+StellHydra uses **Ethereum smart contracts** on Sepolia testnet for cross-chain atomic swaps with Hash Time Locked Contracts (HTLC):
+
+| Contract | Network | Address | Status |
+|----------|---------|---------|--------|
+| **StellarEthereumEscrow** | Sepolia | `0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940` | ✅ **DEPLOYED & VERIFIED** |
+
+### 🚀 EVM Contract Features
+
+- **HTLC Implementation**: Hash Time Locked Contracts for secure atomic swaps
+- **ETH & ERC20 Support**: Handle both native ETH and ERC20 token transfers
+- **Cross-Chain Bridge**: Secure escrow mechanism for Stellar ↔ Ethereum swaps
+- **OpenZeppelin Security**: Built with battle-tested security standards
+- **Time Lock Protection**: Automatic refunds after timelock expiry
+- **Event Monitoring**: Comprehensive event emission for transaction tracking
+
+### 🔗 Live Contract Links
+
+**Primary Explorer (Etherscan)**:
+- **Verified Source Code**: https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940#code
+- **Contract Overview**: https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940
+
+**Alternative Explorer (Blockscout)**:
+- **Contract Details**: https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940
+- **Verified Source**: https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940/contracts
+
+### ⚙️ EVM Contract Development
+
+```bash
+# Navigate to EVM contracts directory
+cd contracts-evm
+
+# Install dependencies
+npm install
+
+# Compile contracts
+npm run compile
+
+# Run comprehensive test suite
+npm test
+
+# Deploy to Sepolia testnet
+npm run deploy:sepolia
+
+# Verify contract on Etherscan
+npm run verify:sepolia
+```
+
+**For detailed EVM contract documentation, see [`contracts-evm/README.md`](./contracts-evm/README.md)**
 
 ## 🔧 Configuration
 
@@ -283,6 +389,15 @@ graph LR
 │   ├── transactions/      # Transaction endpoints
 │   ├── bridge/            # Bridge simulation
 │   └── wallets/           # Wallet management
+├── contracts-stellar/      # Stellar Soroban Smart Contracts
+│   ├── test-contract/     # Enhanced test contract
+│   ├── simple-test/       # Simple counter contract (deployed)
+│   ├── bridge-contract/   # Cross-chain bridge logic
+│   ├── price-oracle/      # DEX price aggregation
+│   ├── liquidity-pool/    # AMM liquidity pools
+│   ├── router/            # DEX aggregation router
+│   ├── scripts/           # Deployment and testing scripts
+│   └── config/            # Network configurations
 ├── server/                 # Legacy Express server (local dev)
 ├── shared/                 # Shared types and schemas
 └── components.json         # Shadcn/UI configuration

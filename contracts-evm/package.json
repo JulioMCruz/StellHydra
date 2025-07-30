@@ -1,0 +1,43 @@
+{
+  "name": "stellhydra-contracts-evm",
+  "version": "1.0.0",
+  "description": "StellHydra Ethereum smart contracts for cross-chain atomic swaps",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
+    "verify:sepolia": "npx hardhat run scripts/verify.js --network sepolia",
+    "verify:mainnet": "npx hardhat run scripts/verify.js --network mainnet",
+    "interact:sepolia": "npx hardhat run scripts/interact.js --network sepolia",
+    "interact:mainnet": "npx hardhat run scripts/interact.js --network mainnet",
+    "create-wallet": "node scripts/create-wallet.js",
+    "create-test-escrow": "node scripts/interact.js --create-test",
+    "coverage": "npx hardhat coverage",
+    "gas-report": "REPORT_GAS=true npx hardhat test",
+    "size": "npx hardhat size-contracts",
+    "clean": "npx hardhat clean"
+  },
+  "keywords": [
+    "ethereum",
+    "stellar",
+    "defi",
+    "atomic-swaps",
+    "htlc",
+    "cross-chain",
+    "bridge",
+    "smart-contracts",
+    "hardhat",
+    "openzeppelin"
+  ],
+  "author": "StellHydra Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
+    "dotenv": "^17.2.1",
+    "hardhat": "^2.26.1"
+  }
+}
