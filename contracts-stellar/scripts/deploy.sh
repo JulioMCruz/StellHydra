@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 NETWORK=${1:-testnet}
-CONTRACT=${2:-test-contract}
+CONTRACT=${2:-stellar-eth-escrow}
 CONFIG_DIR="./config"
 CONTRACTS_DIR="."
 
