@@ -30,6 +30,7 @@ A modern, full-stack cross-chain bridge application that enables seamless token 
 
 ### Blockchain Integration
 - **Stellar SDK** for Stellar network interactions
+- **Soroban Smart Contracts** for on-chain logic
 - **Web3/Ethers** for Ethereum Sepolia testnet
 - **Freighter Wallet** integration for Stellar
 - **MetaMask** integration for Ethereum
@@ -63,6 +64,53 @@ A modern, full-stack cross-chain bridge application that enables seamless token 
    ```
 
 The application will be available at `http://localhost:5000`
+
+## 🌟 Stellar Smart Contracts
+
+### 📋 Contract Overview
+
+StellHydra uses **Soroban smart contracts** on the Stellar network for decentralized cross-chain bridge operations:
+
+| Contract | Status | Description |
+|----------|--------|-------------|
+| **simple-test** | ✅ **Deployed** | Simple counter contract for testing |
+| **bridge-contract** | 🔧 Development | Main cross-chain bridge logic |
+| **price-oracle** | 🔧 Development | DEX price aggregation oracle |
+| **liquidity-pool** | 🔧 Development | AMM liquidity pools |
+| **router** | 🔧 Development | Optimal route finding |
+
+### 🚀 Smart Contract Features
+
+- **Cross-Chain Bridge**: Asset locking/unlocking with multi-signature support
+- **Price Oracle**: Real-time price feeds from multiple DEXs
+- **AMM Pools**: Automated market maker for token swaps
+- **Route Optimization**: Find the best prices across all DEXs
+- **Emergency Controls**: Pause and recovery mechanisms
+
+### ⚙️ Contract Development
+
+```bash
+# Navigate to contracts directory
+cd contracts-stellar
+
+# Install Rust and Soroban CLI
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install --locked soroban-cli
+
+# Build and test contracts
+./scripts/test.sh
+
+# Deploy to testnet
+./scripts/deploy.sh testnet simple-test
+```
+
+### 🔗 Testnet Deployment
+
+- **Network**: Stellar Testnet
+- **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
+- **Explorer**: [View on Stellar Explorer](https://testnet.stellarchain.io)
+
+**For detailed contract documentation, see [`contracts-stellar/README.md`](./contracts-stellar/README.md)**
 
 ## 🔧 Configuration
 
@@ -283,6 +331,15 @@ graph LR
 │   ├── transactions/      # Transaction endpoints
 │   ├── bridge/            # Bridge simulation
 │   └── wallets/           # Wallet management
+├── contracts-stellar/      # Stellar Soroban Smart Contracts
+│   ├── test-contract/     # Enhanced test contract
+│   ├── simple-test/       # Simple counter contract (deployed)
+│   ├── bridge-contract/   # Cross-chain bridge logic
+│   ├── price-oracle/      # DEX price aggregation
+│   ├── liquidity-pool/    # AMM liquidity pools
+│   ├── router/            # DEX aggregation router
+│   ├── scripts/           # Deployment and testing scripts
+│   └── config/            # Network configurations
 ├── server/                 # Legacy Express server (local dev)
 ├── shared/                 # Shared types and schemas
 └── components.json         # Shadcn/UI configuration
