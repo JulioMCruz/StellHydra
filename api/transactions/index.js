@@ -1,6 +1,4 @@
-import { storage } from '../../server/storage.js';
-import { insertTransactionSchema } from '../../shared/schema.js';
-import { z } from 'zod';
+import { storage } from '../_lib/storage.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,15 +6,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const validatedData = insertTransactionSchema.parse(req.body);
-    const transaction = await storage.createTransaction(validatedData);
+    // Basic validation
+    if (!req.body.walletAddress || !req.body.fromNetwork || !req.body.toNetwork || !req.body.fromToken || !req.body.toToken || !req.body.fromAmount) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+    
+    const transaction = await storage.createTransaction(req.body);
     res.json(transaction);
   } catch (error) {
     console.error('Transaction creation error:', error);
-    if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Invalid transaction data', errors: error.errors });
-    } else {
-      res.status(500).json({ message: 'Failed to create transaction' });
-    }
+    res.status(500).json({ message: 'Failed to create transaction' });
   }
 }

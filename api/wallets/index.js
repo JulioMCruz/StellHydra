@@ -1,6 +1,4 @@
-import { storage } from '../../server/storage.js';
-import { insertWalletSchema } from '../../shared/schema.js';
-import { z } from 'zod';
+import { storage } from '../_lib/storage.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,15 +6,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const validatedData = insertWalletSchema.parse(req.body);
-    const wallet = await storage.createOrUpdateWallet(validatedData);
+    // Basic validation
+    if (!req.body.address || !req.body.network) {
+      return res.status(400).json({ message: 'Address and network are required' });
+    }
+    
+    const wallet = await storage.createOrUpdateWallet(req.body);
     res.json(wallet);
   } catch (error) {
     console.error('Wallet creation error:', error);
-    if (error instanceof z.ZodError) {
-      res.status(400).json({ message: 'Invalid wallet data', errors: error.errors });
-    } else {
-      res.status(500).json({ message: 'Failed to create/update wallet' });
-    }
+    res.status(500).json({ message: 'Failed to create/update wallet' });
   }
 }
