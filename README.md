@@ -74,10 +74,6 @@ StellHydra uses **Soroban smart contracts** on the Stellar network for decentral
 | Contract | Status | Description |
 |----------|--------|-------------|
 | **stellar-eth-escrow** | ✅ **Production Ready** | HTLC contract for atomic Stellar-Ethereum swaps |
-| **bridge-contract** | 🔧 Development | Main cross-chain bridge logic |
-| **price-oracle** | 🔧 Development | DEX price aggregation oracle |
-| **liquidity-pool** | 🔧 Development | AMM liquidity pools |
-| **router** | 🔧 Development | Optimal route finding |
 | **simple-test** | ✅ **Built** | Simple test contract for deployment verification |
 | **hello-world-test** | ✅ **Built** | Official Stellar template for testing |
 
