@@ -633,34 +633,34 @@ ANALYTICS_API_KEY=your_analytics_key_here
 
 ```mermaid
 graph TB
-    subgraph "Vercel Deployment"
-        subgraph "Static Assets"
+    subgraph VERCEL ["Vercel Deployment"]
+        subgraph STATIC ["Static Assets"]
             HTML[index.html]
             CSS[CSS Bundle]
             JS[JavaScript Bundle]
         end
         
-        subgraph "Serverless Functions"
-            API1[/api/dex-prices]
-            API2[/api/transactions]
-            API3[/api/bridge]
-            API4[/api/wallets]
+        subgraph FUNCTIONS ["Serverless Functions"]
+            API1[DEX Prices API]
+            API2[Transactions API]
+            API3[Bridge API]
+            API4[Wallets API]
         end
         
-        subgraph "Edge Network"
+        subgraph EDGE ["Edge Network"]
             CDN[Global CDN]
             Cache[Edge Caching]
         end
     end
     
-    subgraph "External Services"
+    subgraph EXTERNAL ["External Services"]
         Supabase[(Supabase DB)]
         StellarNet[Stellar Network]
         EthNet[Ethereum Network]
         DEXs[DEX APIs]
     end
     
-    subgraph "Client"
+    subgraph CLIENT ["Client"]
         Browser[User Browser]
         Freighter[Freighter Wallet]
         MetaMask[MetaMask Wallet]
