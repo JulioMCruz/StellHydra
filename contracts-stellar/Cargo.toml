@@ -4,11 +4,12 @@ members = [
     "test-contract",
     "bridge-contract", 
     "price-oracle",
+    "liquidity-pool",
+    "router",
 ]
 
 [workspace.dependencies]
 soroban-sdk = "21.0.0"
-soroban-token-contract = "21.0.0"
 
 [profile.release]
 opt-level = "z"
