@@ -111,7 +111,15 @@ cargo install --locked soroban-cli
 - **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
 - **Explorer**: [View on Stellar Explorer](https://testnet.stellarchain.io)
 
-**For detailed contract documentation, see [`contracts-stellar/README.md`](./contracts-stellar/README.md)**
+### 📚 **Smart Contract Documentation**
+
+For comprehensive technical documentation, deployment guides, and API references:
+
+**📖 [Stellar Contracts Documentation →](./contracts-stellar/README.md)**
+- HTLC implementation details
+- Deployment procedures  
+- API reference and examples
+- Testing and development guides
 
 ## 🌐 EVM Smart Contracts
 
@@ -164,7 +172,16 @@ npm run deploy:sepolia
 npm run verify:sepolia
 ```
 
-**For detailed EVM contract documentation, see [`contracts-evm/README.md`](./contracts-evm/README.md)**
+### 📚 **EVM Contract Documentation**
+
+For comprehensive technical documentation, deployment guides, and integration examples:
+
+**📖 [EVM Contracts Documentation →](./contracts-evm/README.md)**
+- HTLC contract architecture and features
+- Deployment and verification procedures
+- Smart contract API reference
+- Integration guides and examples
+- Mermaid diagrams and sequence flows
 
 ## 🔧 Configuration
 
