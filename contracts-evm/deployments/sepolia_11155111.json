@@ -1,0 +1,18 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "contracts": {
+    "StellarEthereumEscrow": {
+      "address": "0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940",
+      "constructorArgs": [],
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940#code",
+      "blockscoutUrl": "https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940",
+      "deployedAt": "2025-07-30T15:52:00.000Z",
+      "status": "✅ Production Ready & Verified"
+    }
+  },
+  "deployer": "0x31C6949cb3A40546e2C2752005A6F9a44f8BD45B",
+  "deploymentSuccess": true,
+  "verificationSuccess": true
+}

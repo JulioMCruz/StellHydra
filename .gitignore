@@ -96,3 +96,13 @@ replit.nix
 # Temporary files
 *.tmp
 *.temp
+
+# Wallet files and private keys (SECURITY CRITICAL)
+contracts-evm/wallet/
+contracts-stellar/wallet/
+*.wallet
+*.key
+*wallet*.json
+*private*.json
+*secret*.json
+contracts-evm/wallet/dev-wallet.json

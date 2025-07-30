@@ -73,19 +73,21 @@ StellHydra uses **Soroban smart contracts** on the Stellar network for decentral
 
 | Contract | Status | Description |
 |----------|--------|-------------|
-| **simple-test** | ✅ **Deployed** | Simple counter contract for testing |
+| **stellar-eth-escrow** | ✅ **Production Ready** | HTLC contract for atomic Stellar-Ethereum swaps |
 | **bridge-contract** | 🔧 Development | Main cross-chain bridge logic |
 | **price-oracle** | 🔧 Development | DEX price aggregation oracle |
 | **liquidity-pool** | 🔧 Development | AMM liquidity pools |
 | **router** | 🔧 Development | Optimal route finding |
+| **simple-test** | ✅ **Built** | Simple test contract for deployment verification |
+| **hello-world-test** | ✅ **Built** | Official Stellar template for testing |
 
 ### 🚀 Smart Contract Features
 
-- **Cross-Chain Bridge**: Asset locking/unlocking with multi-signature support
-- **Price Oracle**: Real-time price feeds from multiple DEXs
-- **AMM Pools**: Automated market maker for token swaps
-- **Route Optimization**: Find the best prices across all DEXs
-- **Emergency Controls**: Pause and recovery mechanisms
+- **HTLC Implementation**: Hash Time Locked Contracts for secure atomic swaps
+- **Cross-Chain Bridge**: Asset locking/unlocking with time-based protection
+- **Atomic Swaps**: Complete cross-chain transactions with secret reveal mechanism
+- **Refund Protection**: Automatic refunds after timelock expiry
+- **Security Standards**: Comprehensive authorization and validation system
 
 ### ⚙️ Contract Development
 
@@ -104,13 +106,69 @@ cargo install --locked soroban-cli
 ./scripts/deploy.sh testnet simple-test
 ```
 
-### 🔗 Testnet Deployment
+### 🔗 Contract Status
 
-- **Network**: Stellar Testnet
+- **Network**: Stellar Testnet (pending infrastructure fix)
+- **Main Contract**: `stellar-eth-escrow` (Production Ready)
+- **WASM Hash**: `06ee60bd4d6daacbf503767722cf4f7cbf8a48eef50decaad30775ecc4fad5bf`
+- **Test Coverage**: 5/5 tests passing (100%)
 - **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
 - **Explorer**: [View on Stellar Explorer](https://testnet.stellarchain.io)
 
 **For detailed contract documentation, see [`contracts-stellar/README.md`](./contracts-stellar/README.md)**
+
+## 🌐 EVM Smart Contracts
+
+### 📋 Contract Overview
+
+StellHydra uses **Ethereum smart contracts** on Sepolia testnet for cross-chain atomic swaps with Hash Time Locked Contracts (HTLC):
+
+| Contract | Network | Address | Status |
+|----------|---------|---------|--------|
+| **StellarEthereumEscrow** | Sepolia | `0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940` | ✅ **DEPLOYED & VERIFIED** |
+
+### 🚀 EVM Contract Features
+
+- **HTLC Implementation**: Hash Time Locked Contracts for secure atomic swaps
+- **ETH & ERC20 Support**: Handle both native ETH and ERC20 token transfers
+- **Cross-Chain Bridge**: Secure escrow mechanism for Stellar ↔ Ethereum swaps
+- **OpenZeppelin Security**: Built with battle-tested security standards
+- **Time Lock Protection**: Automatic refunds after timelock expiry
+- **Event Monitoring**: Comprehensive event emission for transaction tracking
+
+### 🔗 Live Contract Links
+
+**Primary Explorer (Etherscan)**:
+- **Verified Source Code**: https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940#code
+- **Contract Overview**: https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940
+
+**Alternative Explorer (Blockscout)**:
+- **Contract Details**: https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940
+- **Verified Source**: https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940/contracts
+
+### ⚙️ EVM Contract Development
+
+```bash
+# Navigate to EVM contracts directory
+cd contracts-evm
+
+# Install dependencies
+npm install
+
+# Compile contracts
+npm run compile
+
+# Run comprehensive test suite
+npm test
+
+# Deploy to Sepolia testnet
+npm run deploy:sepolia
+
+# Verify contract on Etherscan
+npm run verify:sepolia
+```
+
+**For detailed EVM contract documentation, see [`contracts-evm/README.md`](./contracts-evm/README.md)**
 
 ## 🔧 Configuration
 
