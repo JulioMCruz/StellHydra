@@ -1,0 +1,700 @@
+# StellHydra + 1inch Fusion Cross-Chain Bridge - Cursor Rules
+
+## Project Overview
+
+This is an enhanced StellHydra cross-chain bridge system that integrates 1inch Fusion Protocol for optimal DEX routing and improved swap efficiency between Stellar and Ethereum networks.
+
+## Existing Architecture (StellHydra Base)
+
+```
+Frontend → StellHydra Bridge → Atomic Swaps → Cross-Chain Transfer
+    ↓
+1inch Fusion API (NEW) → Enhanced Routing → Optimized Swaps
+```
+
+## Enhanced Architecture with 1inch Fusion
+
+```
+Frontend (React/Next.js)
+    ↓
+1inch Fusion API (Route Discovery & Aggregation)
+    ↓
+StellHydra Bridge (Enhanced with Fusion Routes)
+    ↓
+Atomic Swaps (Stellar ↔ Ethereum)
+    ↓
+Destination Chain Execution
+```
+
+## Core Components
+
+### 1. Existing StellHydra Contracts (Enhanced)
+
+-   **StellarEthereumEscrow.sol**: HTLC for atomic swaps (ENHANCED with Fusion routes)
+-   **Bridge Contract**: Cross-chain transfer management (ENHANCED with Fusion integration)
+-   **Router Contract**: DEX aggregation (ENHANCED with 1inch Fusion)
+-   **Price Oracle**: Decentralized price feeds (ENHANCED with Fusion price data)
+-   **Liquidity Pool**: AMM-style liquidity provision
+
+### 2. New 1inch Fusion Integration
+
+-   **FusionRouter**: 1inch Fusion API integration
+-   **FusionQuoteValidator**: Quote validation and slippage protection
+-   **FusionSwapExecutor**: Execute swaps through 1inch Fusion
+-   **CrossChainFusionBridge**: Bridge 1inch Fusion with StellHydra
+
+### 3. Enhanced Frontend Integration
+
+-   **StellHydraFusionOrchestrator**: Main orchestrator combining StellHydra + Fusion
+-   **FusionAPI**: 1inch Fusion API integration
+-   **EnhancedBridgeClient**: StellHydra bridge with Fusion routing
+-   **SwapRequest Interface**: Enhanced with Fusion route data
+
+## Key Interfaces (Enhanced)
+
+```typescript
+interface EnhancedSwapRequest {
+	fromToken: string;
+	toToken: string;
+	fromAmount: string;
+	toAmount: string;
+	fromChain: string;
+	toChain: string;
+	userAddress: string;
+	// NEW: Fusion-specific fields
+	fusionRoute?: FusionRoute;
+	slippageTolerance?: number;
+	deadline?: number;
+}
+
+interface FusionRoute {
+	path: string[];
+	protocols: string[];
+	estimatedOutput: string;
+	gasEstimate: string;
+	priceImpact: number;
+	fusionQuote: any;
+	dexAggregator: string;
+}
+
+interface EnhancedBridgeTransaction {
+	sourceTxHash: string;
+	destinationTxHash?: string;
+	status: "pending" | "completed" | "failed";
+	escrowAddress: string;
+	orderHash: string;
+	// NEW: Fusion-specific fields
+	fusionRouteUsed?: FusionRoute;
+	bridgeType: "atomic_swap" | "fusion_bridge";
+	executionTime?: number;
+}
+```
+
+## Implementation Requirements
+
+### 1. Enhanced Contract Dependencies
+
+```toml
+# Existing StellHydra dependencies
+[dependencies]
+soroban-sdk = "22.0.8"
+stellar-sdk = "13.3.0"
+
+# NEW: Fusion integration dependencies
+fusion-router = { path = "contracts/fusion-router" }
+fusion-quote-validator = { path = "contracts/fusion-quote-validator" }
+fusion-swap-executor = { path = "contracts/fusion-swap-executor" }
+cross-chain-fusion-bridge = { path = "contracts/cross-chain-fusion-bridge" }
+
+# Existing StellHydra contracts
+bridge-contract = { path = "contracts-stellar/bridge-contract" }
+stellar-eth-escrow = { path = "contracts-stellar/stellar-eth-escrow" }
+router = { path = "contracts-stellar/router" }
+price-oracle = { path = "contracts-stellar/price-oracle" }
+liquidity-pool = { path = "contracts-stellar/liquidity-pool" }
+```
+
+### 2. Enhanced Frontend Dependencies
+
+```json
+{
+	"dependencies": {
+		"@stellar/stellar-sdk": "^13.3.0",
+		"@1inch/fusion-sdk": "^1.0.0",
+		"ethers": "^6.0.0",
+		"typescript": "^5"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^18",
+		"hardhat": "^2.19.0"
+	}
+}
+```
+
+### 3. Enhanced Environment Variables
+
+```bash
+# Existing StellHydra variables
+STELLAR_RPC_URL=https://horizon-testnet.stellar.org
+ETHEREUM_RPC_URL=https://sepolia.infura.io/v3/YOUR_KEY
+STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
+
+# NEW: Fusion integration variables
+FUSION_API_KEY=your-1inch-api-key
+FUSION_API_URL=https://fusion.1inch.io
+FUSION_CHAIN_ID=1
+
+# Enhanced StellHydra addresses
+BRIDGE_CONTRACT_ADDRESS=deployed-bridge-contract-address
+ESCROW_CONTRACT_ADDRESS=deployed-escrow-contract-address
+ROUTER_CONTRACT_ADDRESS=deployed-router-contract-address
+PRICE_ORACLE_ADDRESS=deployed-price-oracle-address
+LIQUIDITY_POOL_ADDRESS=deployed-liquidity-pool-address
+
+# NEW: Fusion contract addresses
+FUSION_ROUTER_ADDRESS=deployed-fusion-router-address
+FUSION_QUOTE_VALIDATOR_ADDRESS=deployed-fusion-quote-validator-address
+FUSION_SWAP_EXECUTOR_ADDRESS=deployed-fusion-swap-executor-address
+CROSS_CHAIN_FUSION_BRIDGE_ADDRESS=deployed-cross-chain-fusion-bridge-address
+```
+
+## Enhanced Core Functions
+
+### 1. Enhanced Bridge Contract Functions
+
+```rust
+// NEW: Enhanced bridge with Fusion integration
+fn initiate_fusion_bridge(
+    env: Env,
+    user: Address,
+    token: Address,
+    amount: U256,
+    dest_chain: u32,
+    dest_user: Bytes,
+    fusion_route: FusionRoute,
+) -> Result<Address, Error>
+
+fn complete_fusion_bridge(
+    env: Env,
+    source_tx_hash: BytesN<32>,
+    dest_user: Address,
+    token: Address,
+    amount: U256,
+    proof: Bytes,
+    fusion_execution_data: FusionExecutionData,
+) -> Result<(), Error>
+
+// Enhanced existing functions
+fn initiate_bridge(
+    env: Env,
+    user: Address,
+    token: Address,
+    amount: U256,
+    dest_chain: u32,
+    dest_user: Bytes,
+    use_fusion: bool, // NEW: Flag to use Fusion routing
+) -> Result<Address, Error>
+```
+
+### 2. Enhanced Router Contract Functions
+
+```rust
+// NEW: Fusion integration functions
+fn get_fusion_route(
+    env: Env,
+    from_token: Address,
+    to_token: Address,
+    amount: U256,
+    from_chain_id: u32,
+    to_chain_id: u32,
+) -> Result<FusionRoute, Error>
+
+fn execute_fusion_swap(
+    env: Env,
+    fusion_route: FusionRoute,
+    user: Address,
+    deadline: U256,
+) -> Result<SwapResult, Error>
+
+fn validate_fusion_quote(
+    env: Env,
+    quote: FusionQuote,
+    expected_output: U256,
+    max_slippage: u32,
+) -> Result<bool, Error>
+
+// Enhanced existing functions
+fn find_best_route(
+    env: Env,
+    from_token: Address,
+    to_token: Address,
+    amount: U256,
+    include_fusion: bool, // NEW: Include Fusion routes
+) -> Result<Route, Error>
+```
+
+### 3. Enhanced Escrow Contract Functions
+
+```rust
+// NEW: Fusion-enhanced escrow functions
+fn create_fusion_escrow(
+    env: Env,
+    maker: Address,
+    taker: Address,
+    token: Address,
+    amount: U256,
+    fusion_route: FusionRoute,
+    deadline: U256,
+) -> Result<Address, Error>
+
+fn complete_fusion_escrow(
+    env: Env,
+    escrow_id: BytesN<32>,
+    secret: BytesN<32>,
+    fusion_execution_proof: FusionExecutionProof,
+) -> Result<(), Error>
+
+// Enhanced existing functions
+fn create_escrow(
+    env: Env,
+    maker: Address,
+    taker: Address,
+    token: Address,
+    amount: U256,
+    use_fusion: bool, // NEW: Flag to use Fusion
+) -> Result<Address, Error>
+```
+
+### 4. Enhanced Frontend Orchestrator Functions
+
+```typescript
+// NEW: Enhanced orchestrator with Fusion integration
+class StellHydraFusionOrchestrator {
+	async executeFusionCrossChainSwap(
+		swapRequest: EnhancedSwapRequest
+	): Promise<EnhancedBridgeTransaction>;
+
+	async getFusionQuote(
+		swapRequest: EnhancedSwapRequest
+	): Promise<FusionRoute[]>;
+
+	async executeStellHydraBridge(
+		swapRequest: EnhancedSwapRequest
+	): Promise<EnhancedBridgeTransaction>;
+
+	async executeFusionBridge(
+		swapRequest: EnhancedSwapRequest
+	): Promise<EnhancedBridgeTransaction>;
+
+	private async selectOptimalRoute(
+		swapRequest: EnhancedSwapRequest
+	): Promise<"fusion" | "stellhydra">;
+
+	private async validateFusionQuote(
+		quote: FusionQuote,
+		expectedOutput: string
+	): Promise<boolean>;
+
+	private async executeFusionSwap(
+		route: FusionRoute,
+		userAddress: string
+	): Promise<string>;
+}
+```
+
+## Enhanced Security Requirements
+
+### 1. Fusion-Specific Security
+
+-   **Quote Validation**: Validate 1inch Fusion quotes against expected output
+-   **Slippage Protection**: Implement slippage tolerance checks
+-   **Deadline Enforcement**: Ensure swaps execute within specified timeframes
+-   **Route Verification**: Verify Fusion routes are optimal and secure
+
+### 2. Enhanced Bridge Security
+
+-   **Fusion Route Validation**: Validate Fusion routes before execution
+-   **Cross-Chain Proof Verification**: Enhanced proof verification for Fusion routes
+-   **Rate Limiting**: Prevent spam attacks on Fusion integration
+-   **Access Control**: Restrict Fusion functions to authorized parties
+
+### 3. Enhanced Input Validation
+
+-   **Fusion Route Validation**: Validate all Fusion route parameters
+-   **Quote Expiry Checks**: Ensure quotes haven't expired
+-   **Amount Validation**: Validate amounts against Fusion limits
+-   **Chain ID Validation**: Ensure supported chain IDs
+
+## Enhanced Testing Requirements
+
+### 1. Fusion Integration Tests
+
+-   Fusion quote retrieval and validation
+-   Fusion route execution
+-   Cross-chain Fusion bridge functionality
+-   Fusion quote expiry handling
+
+### 2. Enhanced Integration Tests
+
+-   StellHydra + Fusion hybrid routing
+-   Fallback mechanisms (Fusion → StellHydra)
+-   Performance comparison tests
+-   Gas optimization tests
+
+### 3. Enhanced End-to-End Tests
+
+-   Complete Fusion-enabled cross-chain swap
+-   Fusion route optimization
+-   Error handling and recovery
+-   Performance monitoring
+
+## Enhanced Deployment Requirements
+
+### 1. Contract Deployment Order
+
+1. Deploy existing StellHydra contracts
+2. Deploy Fusion integration contracts
+3. Deploy enhanced bridge contracts
+4. Deploy cross-chain Fusion bridge
+5. Configure Fusion API integration
+
+### 2. Enhanced Environment Setup
+
+```bash
+# Install Fusion SDK
+npm install @1inch/fusion-sdk
+
+# Configure Fusion API
+export FUSION_API_KEY=your-api-key
+export FUSION_CHAIN_ID=1
+
+# Deploy enhanced contracts
+npx hardhat deploy --network sepolia
+soroban contract deploy --network testnet
+```
+
+## Enhanced Monitoring and Analytics
+
+### 1. Fusion-Specific Metrics
+
+-   Fusion route success rate
+-   Fusion quote accuracy
+-   Fusion execution time
+-   Fusion vs StellHydra performance comparison
+
+### 2. Enhanced Logging Implementation
+
+```rust
+// Enhanced logging with Fusion data
+env.logs().add("FUSION_SWAP_EXECUTED", (
+    order_hash,
+    maker,
+    taker,
+    making_amount,
+    taking_amount,
+    fusion_route,
+    execution_time,
+));
+```
+
+## Enhanced Error Handling
+
+### 1. Fusion-Specific Errors
+
+```rust
+#[contracterror]
+#[derive(Clone, Copy)]
+#[repr(u32)]
+pub enum FusionError {
+    InvalidFusionQuote = 10,
+    FusionQuoteExpired = 11,
+    FusionRouteInvalid = 12,
+    FusionExecutionFailed = 13,
+    SlippageExceeded = 14,
+    DeadlineExceeded = 15,
+}
+```
+
+### 2. Enhanced Frontend Error Handling
+
+```typescript
+try {
+	const result = await orchestrator.executeFusionCrossChainSwap(swapRequest);
+	console.log("Fusion swap completed:", result);
+} catch (error) {
+	if (error.message.includes("fusion_quote_expired")) {
+		// Handle expired Fusion quote
+	} else if (error.message.includes("slippage_exceeded")) {
+		// Handle slippage exceeded
+	} else if (error.message.includes("fusion_execution_failed")) {
+		// Fallback to StellHydra
+	}
+}
+```
+
+## Enhanced Chain Configuration
+
+### 1. Supported Chains (Enhanced)
+
+```typescript
+const chainIds: { [key: string]: number } = {
+	stellar: 148,
+	ethereum: 1,
+	polygon: 137,
+	bsc: 56,
+	arbitrum: 42161,
+	optimism: 10,
+	avalanche: 43114,
+};
+```
+
+### 2. Enhanced Network Configuration
+
+```typescript
+const networkConfigs = {
+	testnet: {
+		stellar: {
+			networkPassphrase: "Test SDF Network ; September 2015",
+			rpcUrl: "https://horizon-testnet.stellar.org",
+		},
+		ethereum: {
+			rpcUrl: "https://sepolia.infura.io/v3/YOUR_KEY",
+			chainId: 11155111,
+		},
+		fusion: {
+			apiUrl: "https://fusion.1inch.io",
+			chainId: 1,
+		},
+	},
+	mainnet: {
+		stellar: {
+			networkPassphrase: "Public Global Stellar Network ; September 2015",
+			rpcUrl: "https://horizon.stellar.org",
+		},
+		ethereum: {
+			rpcUrl: "https://mainnet.infura.io/v3/YOUR_KEY",
+			chainId: 1,
+		},
+		fusion: {
+			apiUrl: "https://fusion.1inch.io",
+			chainId: 1,
+		},
+	},
+};
+```
+
+## Enhanced API Integration
+
+### 1. Enhanced 1inch Fusion API
+
+```typescript
+class EnhancedFusionAPI {
+	private baseUrl = "https://fusion.1inch.io";
+	private apiKey: string;
+
+	async getQuote(params: {
+		fromToken: string;
+		toToken: string;
+		amount: string;
+		fromChainId: number;
+		toChainId: number;
+		slippage?: number;
+		deadline?: number;
+	}): Promise<FusionQuote>;
+
+	async executeSwap(
+		quote: FusionQuote,
+		userAddress: string,
+		signature: string
+	): Promise<FusionSwapResult>;
+
+	async getSupportedTokens(chainId: number): Promise<string[]>;
+
+	async getSupportedChains(): Promise<number[]>;
+}
+```
+
+### 2. Enhanced StellHydra Integration
+
+```typescript
+class EnhancedStellHydraClient {
+	async executeAtomicSwap(
+		swapRequest: EnhancedSwapRequest
+	): Promise<EnhancedBridgeTransaction>;
+
+	async executeFusionBridge(
+		swapRequest: EnhancedSwapRequest
+	): Promise<EnhancedBridgeTransaction>;
+
+	async getOptimalRoute(
+		swapRequest: EnhancedSwapRequest
+	): Promise<"fusion" | "stellhydra">;
+
+	async validateFusionQuote(quote: FusionQuote): Promise<boolean>;
+}
+```
+
+## Enhanced File Structure Requirements
+
+```
+project/
+├── contracts-evm/ (Existing StellHydra)
+│   ├── StellarEthereumEscrow.sol (ENHANCED)
+│   └── FusionIntegration.sol (NEW)
+├── contracts-stellar/ (Existing StellHydra)
+│   ├── bridge-contract/ (ENHANCED)
+│   ├── stellar-eth-escrow/ (ENHANCED)
+│   ├── router/ (ENHANCED)
+│   ├── price-oracle/ (ENHANCED)
+│   ├── liquidity-pool/ (ENHANCED)
+│   └── fusion-integration/ (NEW)
+│       ├── fusion-router/
+│       ├── fusion-quote-validator/
+│       ├── fusion-swap-executor/
+│       └── cross-chain-fusion-bridge/
+├── client/
+│   ├── stellhydra-fusion-orchestrator.ts (NEW)
+│   ├── enhanced-fusion-api.ts (NEW)
+│   ├── enhanced-stellhydra-client.ts (NEW)
+│   └── package.json (ENHANCED)
+├── deploy-contracts.sh (ENHANCED)
+├── IMPLEMENTATION_GUIDE.md (ENHANCED)
+├── TESTING_GUIDE.md (ENHANCED)
+├── QUICK_START.md (ENHANCED)
+└── .cursorrules (ENHANCED)
+```
+
+## Enhanced Development Workflow
+
+### 1. Local Development
+
+```bash
+# Build existing StellHydra contracts
+cd contracts-stellar && cargo build --target wasm32-unknown-unknown --release
+
+# Build new Fusion integration contracts
+cd fusion-integration && cargo build --target wasm32-unknown-unknown --release
+
+# Test enhanced contracts
+cargo test
+
+# Deploy to testnet
+./deploy-contracts.sh
+
+# Test enhanced frontend
+cd ../client && npm test
+```
+
+### 2. Enhanced Testing Strategy
+
+```bash
+# Run all enhanced tests
+npm run test:all
+
+# Run specific enhanced test suites
+npm run test:unit
+npm run test:integration
+npm run test:fusion
+npm run test:e2e
+npm run test:performance
+npm run test:security
+```
+
+## Enhanced Performance Optimization
+
+### 1. Fusion-Specific Optimization
+
+-   **Route Caching**: Cache Fusion routes for repeated requests
+-   **Quote Optimization**: Optimize quote retrieval and validation
+-   **Execution Batching**: Batch multiple Fusion swaps
+-   **Gas Optimization**: Optimize Fusion execution gas costs
+
+### 2. Enhanced Frontend Optimization
+
+-   **Fusion Route Caching**: Cache Fusion routes for better UX
+-   **Real-time Updates**: WebSocket for Fusion quote updates
+-   **Bundle Optimization**: Optimize Fusion SDK bundle size
+-   **Lazy Loading**: Lazy load Fusion components
+
+## Enhanced Security Best Practices
+
+### 1. Fusion-Specific Security
+
+-   **Quote Verification**: Verify Fusion quotes on-chain
+-   **Route Validation**: Validate Fusion routes before execution
+-   **Slippage Protection**: Implement robust slippage protection
+-   **Deadline Enforcement**: Enforce strict deadlines for Fusion swaps
+
+### 2. Enhanced Code Security
+
+-   **Fusion Input Validation**: Validate all Fusion inputs
+-   **Access Control**: Restrict Fusion functions to authorized parties
+-   **Reentrancy Protection**: Enhanced reentrancy protection for Fusion
+-   **Integer Overflow Protection**: Protect against Fusion-related overflows
+
+## Enhanced Documentation Requirements
+
+### 1. Fusion Integration Documentation
+
+-   **Fusion API Integration Guide**: Complete Fusion API integration
+-   **Fusion Route Optimization**: Guide to Fusion route optimization
+-   **Fusion Security Guide**: Security considerations for Fusion integration
+-   **Fusion Performance Guide**: Performance optimization for Fusion
+
+### 2. Enhanced User Documentation
+
+-   **Enhanced User Guides**: Updated guides with Fusion features
+-   **Fusion Troubleshooting**: Troubleshooting Fusion-related issues
+-   **Fusion FAQ**: Frequently asked questions about Fusion integration
+-   **Fusion Video Tutorials**: Video tutorials for Fusion features
+
+## Enhanced Compliance and Legal
+
+### 1. Fusion-Specific Compliance
+
+-   **Fusion API Compliance**: Ensure compliance with 1inch Fusion API terms
+-   **Cross-Chain Compliance**: Ensure compliance across all supported chains
+-   **Regulatory Reporting**: Enhanced reporting for Fusion transactions
+-   **Compliance Monitoring**: Monitor Fusion transactions for compliance
+
+### 2. Enhanced Legal Requirements
+
+-   **Enhanced Terms of Service**: Updated terms including Fusion features
+-   **Enhanced Privacy Policy**: Updated privacy policy for Fusion data
+-   **Enhanced Risk Disclosures**: Updated risk disclosures for Fusion
+-   **Enhanced User Agreements**: Updated user agreements for Fusion
+
+## Enhanced Maintenance and Updates
+
+### 1. Fusion-Specific Version Management
+
+-   **Fusion SDK Updates**: Regular updates to Fusion SDK
+-   **Fusion API Updates**: Regular updates to Fusion API integration
+-   **Backward Compatibility**: Maintain backward compatibility with StellHydra
+-   **Migration Guides**: Guides for Fusion-related migrations
+
+### 2. Enhanced Monitoring and Alerts
+
+-   **Fusion Health Monitoring**: Monitor Fusion API health
+-   **Fusion Performance Alerts**: Alerts for Fusion performance issues
+-   **Fusion Security Alerts**: Alerts for Fusion security issues
+-   **Fusion Error Tracking**: Track Fusion-related errors
+
+## Enhanced Support and Community
+
+### 1. Fusion-Specific Support Channels
+
+-   **Fusion Documentation**: Comprehensive Fusion documentation
+-   **Fusion FAQ**: Fusion-specific frequently asked questions
+-   **Fusion Community Forums**: Community forums for Fusion features
+-   **Fusion Technical Support**: Technical support for Fusion integration
+
+### 2. Enhanced Community Engagement
+
+-   **Fusion Open Source**: Open source Fusion integration components
+-   **Fusion Community Feedback**: Community feedback for Fusion features
+-   **Fusion Feature Requests**: Feature requests for Fusion integration
+-   **Fusion Bug Reports**: Bug reports for Fusion-related issues
+
+This enhanced .cursorrules file provides comprehensive guidance for integrating 1inch Fusion with your existing StellHydra project. Follow these rules to ensure a robust, secure, and scalable Fusion-enhanced cross-chain bridge system.

@@ -1,0 +1,26 @@
+{
+	"server": {
+		"port": 5000,
+		"nodeEnv": "development",
+		"logLevel": "info"
+	},
+	"fusion": {
+		"apiKey": "your-1inch-api-key-here",
+		"apiUrl": "https://fusion.1inch.io",
+		"chainId": 1
+	},
+	"stellar": {
+		"rpcUrl": "https://horizon-testnet.stellar.org",
+		"networkPassphrase": "Test SDF Network ; September 2015"
+	},
+	"ethereum": {
+		"rpcUrl": "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+		"chainId": 11155111
+	},
+	"features": {
+		"enableRelayer": true,
+		"enableFusionMonitoring": true,
+		"enableLiveTransactions": true,
+		"enableRealPricing": true
+	}
+}
