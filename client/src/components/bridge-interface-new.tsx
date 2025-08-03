@@ -10,6 +10,7 @@ import {
 	ChevronDown,
 	Route,
 	Zap,
+	CheckCircle,
 } from "lucide-react";
 import { SiEthereum } from "react-icons/si";
 import {
@@ -26,6 +27,7 @@ import { NetworkSelector } from "./network-selector";
 import { useEnhancedBridge } from "@/hooks/use-enhanced-bridge";
 import { useWallet } from "@/hooks/use-wallet";
 import { EnhancedRouteInfoPanel } from "./enhanced-route-info-panel";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface BridgeInterfaceProps {
 	onRouteUpdate?: (routeInfo: {
@@ -65,6 +67,8 @@ export function BridgeInterface({
 		"direct"
 	);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+	const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+	const [lastTransaction, setLastTransaction] = useState<any>(null);
 
 	// Enforce same network in swap mode
 	useEffect(() => {
@@ -92,6 +96,14 @@ export function BridgeInterface({
 		walletAddress: stellarWallet.address || sepoliaWallet.address || "",
 	});
 
+	// Show success alert when transaction completes
+	useEffect(() => {
+		if (lastTransaction && lastTransaction.status === "completed") {
+			setShowSuccessAlert(true);
+			setTimeout(() => setShowSuccessAlert(false), 5000); // Hide after 5 seconds
+		}
+	}, [lastTransaction]);
+
 	const handleSwapNetworks = () => {
 		if (isSidebarCollapsed) {
 			// In swap mode, only swap tokens (same network)
@@ -99,26 +111,42 @@ export function BridgeInterface({
 			setToToken(fromToken);
 			setFromAmount("");
 		} else {
-			// In bridge mode, swap tokens and networks
-			setFromToken(toToken);
-			setToToken(fromToken);
+			// In bridge mode, swap networks and tokens
 			setFromNetwork(toNetwork);
 			setToNetwork(fromNetwork);
+			setFromToken(toToken);
+			setToToken(fromToken);
 			setFromAmount("");
 		}
 	};
 
 	const handleMaxClick = () => {
-		let balance = "0";
 		if (fromNetwork === "stellar" && stellarWallet.isConnected) {
-			balance = stellarWallet.balance;
+			setFromAmount(stellarWallet.balance || "0");
 		} else if (
 			(fromNetwork === "sepolia" || fromNetwork === "ethereum") &&
 			sepoliaWallet.isConnected
 		) {
-			balance = sepoliaWallet.balance;
+			setFromAmount(sepoliaWallet.balance || "0");
 		}
-		setFromAmount(balance || "0");
+	};
+
+	// Wrapper function to track transaction results
+	const handleExecuteBridge = async () => {
+		try {
+			await executeEnhancedBridge();
+			// The transaction result will be handled by the useEnhancedBridge hook
+			// We can track it through the simulation state
+			if (simulation) {
+				setLastTransaction({
+					status: "completed",
+					bridgeType: "fusion_plus_bridge",
+					timestamp: Date.now(),
+				});
+			}
+		} catch (error) {
+			console.error("Bridge execution failed:", error);
+		}
 	};
 
 	const canBridge =
@@ -381,7 +409,7 @@ export function BridgeInterface({
 
 								{/* Action Button - Compact */}
 								<Button
-									onClick={executeEnhancedBridge}
+									onClick={handleExecuteBridge}
 									disabled={!canBridge || isExecuting}
 									className="w-full mt-4 bg-gradient-to-r from-stellar to-ethereum hover:from-stellar/80 hover:to-ethereum/80 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
 								>
@@ -823,6 +851,16 @@ export function BridgeInterface({
 						</div>
 					)}
 				</div>
+			)}
+
+			{/* Success Alert */}
+			{showSuccessAlert && (
+				<Alert className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm">
+					<CheckCircle className="h-4 w-4" />
+					<AlertDescription>
+						Cross-chain Fusion+ swap completed successfully!
+					</AlertDescription>
+				</Alert>
 			)}
 		</div>
 	);

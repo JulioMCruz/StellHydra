@@ -346,7 +346,7 @@ export class StellHydraFusionOrchestrator {
 				executionTime: Date.now(),
 			};
 
-			// Create enhanced transaction result
+			// Create enhanced transaction result with better tracking
 			const result: EnhancedFusionPlusBridgeTransaction = {
 				sourceTxHash: bridgeResult.sourceTxHash,
 				destinationTxHash: fusionResult.txHash,
@@ -360,7 +360,18 @@ export class StellHydraFusionOrchestrator {
 				secretStatus: "revealed",
 			};
 
-			console.log("Cross-chain hybrid execution completed:", result);
+			// Log detailed execution info
+			console.log("Cross-chain hybrid execution completed:", {
+				fromToken: swapRequest.fromToken,
+				toToken: swapRequest.toToken,
+				fromAmount: swapRequest.fromAmount,
+				estimatedOutput: route.estimatedOutput,
+				sourceTxHash: result.sourceTxHash,
+				destinationTxHash: result.destinationTxHash,
+				executionTime: result.executionTime,
+				protocols: route.protocols,
+			});
+
 			return result;
 		} catch (error) {
 			console.error("Cross-chain hybrid execution failed:", error);
