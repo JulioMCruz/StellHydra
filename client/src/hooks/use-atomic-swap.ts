@@ -3,6 +3,184 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+// Mock mode for demo purposes
+const MOCK_MODE = true; // Set to true to enable mock responses
+
+// Mock data generators
+const generateMockSwapId = () => `mock_swap_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+const generateMockSwapStatus = (swapId: string, status: string = 'initiated'): any => {
+  const baseData = {
+    success: true,
+    swap: {
+      swapId,
+      status,
+      fromChain: 'stellar',
+      toChain: 'ethereum',
+      fromToken: 'XLM',
+      toToken: 'ETH',
+      fromAmount: '100',
+      toAmount: '0.05',
+      userAddress: 'GDXT7PYMOITTDNJIF64JMSBR...',
+      timelock: 3600,
+      createdAt: Date.now(),
+      stellarEscrow: status !== 'initiated' ? {
+        id: `stellar_escrow_${swapId}`,
+        status: status === 'completed' ? 'completed' : status === 'refunded' ? 'refunded' : 'locked',
+        amount: '100',
+        token: 'XLM'
+      } : undefined,
+      ethereumEscrow: status === 'escrows_created' || status === 'escrows_locked' || status === 'completed' || status === 'refunded' ? {
+        id: `ethereum_escrow_${swapId}`,
+        status: status === 'completed' ? 'completed' : status === 'refunded' ? 'refunded' : 'locked',
+        amount: '0.05',
+        token: 'ETH'
+      } : undefined,
+    },
+    relayerTasks: [
+      {
+        id: `task_${swapId}_1`,
+        type: 'create_stellar_escrow',
+        chain: 'stellar',
+        status: status === 'initiated' ? 'pending' : 'completed',
+        attempts: 1,
+        createdAt: Date.now()
+      },
+      {
+        id: `task_${swapId}_2`,
+        type: 'create_ethereum_escrow',
+        chain: 'ethereum',
+        status: status === 'initiated' ? 'pending' : status === 'escrows_created' ? 'pending' : 'completed',
+        attempts: 1,
+        createdAt: Date.now()
+      }
+    ]
+  };
+
+  if (status === 'completed') {
+    baseData.swap.completedAt = Date.now();
+  }
+
+  if (status === 'refunded') {
+    baseData.swap.refundedAt = Date.now();
+    baseData.relayerTasks.push({
+      id: `task_${swapId}_refund`,
+      type: 'process_refund',
+      chain: 'stellar',
+      status: 'completed',
+      attempts: 1,
+      createdAt: Date.now()
+    });
+  }
+
+  return baseData;
+};
+
+const mockSwaps = new Map<string, any>();
+
+const mockApiCall = async (endpoint: string, method: string, data?: any): Promise<any> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+
+  if (endpoint === '/api/atomic-swap/initiate' && method === 'POST') {
+    const swapId = generateMockSwapId();
+    const mockSwap = generateMockSwapStatus(swapId, 'initiated');
+    mockSwaps.set(swapId, mockSwap);
+    
+    // Simulate progression through states
+    setTimeout(() => {
+      if (mockSwaps.has(swapId)) {
+        mockSwaps.set(swapId, generateMockSwapStatus(swapId, 'escrows_created'));
+      }
+    }, 3000);
+    
+    setTimeout(() => {
+      if (mockSwaps.has(swapId)) {
+        mockSwaps.set(swapId, generateMockSwapStatus(swapId, 'escrows_locked'));
+      }
+    }, 6000);
+
+    return { swapId, ...mockSwap.swap };
+  }
+
+  if (endpoint.startsWith('/api/atomic-swap/status/') && method === 'GET') {
+    const swapId = endpoint.split('/').pop();
+    if (mockSwaps.has(swapId!)) {
+      return mockSwaps.get(swapId!);
+    }
+    return generateMockSwapStatus(swapId!, 'initiated');
+  }
+
+  if (endpoint.startsWith('/api/atomic-swap/complete/') && method === 'POST') {
+    const swapId = endpoint.split('/').pop();
+    const completedSwap = generateMockSwapStatus(swapId!, 'completed');
+    mockSwaps.set(swapId!, completedSwap);
+    return { success: true, message: 'Swap completed successfully' };
+  }
+
+  if (endpoint.startsWith('/api/atomic-swap/refund/') && method === 'POST') {
+    const swapId = endpoint.split('/').pop();
+    const refundedSwap = generateMockSwapStatus(swapId!, 'refunded');
+    mockSwaps.set(swapId!, refundedSwap);
+    return { success: true, message: 'Swap refunded successfully' };
+  }
+
+  if (endpoint === '/api/atomic-swap/all' && method === 'GET') {
+    const swaps = Array.from(mockSwaps.values()).map(swap => swap.swap);
+    return { success: true, swaps, count: swaps.length };
+  }
+
+  if (endpoint === '/api/atomic-swap/relayer/metrics' && method === 'GET') {
+    return {
+      success: true,
+      metrics: {
+        totalTasks: 42,
+        completedTasks: 38,
+        pendingTasks: 4,
+        failedTasks: 0,
+        successRate: 95.2,
+        averageExecutionTime: 2150
+      }
+    };
+  }
+
+  if (endpoint === '/api/atomic-swap/health' && method === 'GET') {
+    return {
+      success: true,
+      orchestrator: {
+        status: 'healthy',
+        activeSwaps: 3,
+        queueStatus: {
+          running: 2,
+          queueLength: 1
+        },
+        ethereum: {
+          connected: true,
+          contractInitialized: true,
+          circuitBreakerState: 'CLOSED',
+          lastError: null
+        },
+        stellar: {
+          connected: true,
+          escrowClientInitialized: true,
+          circuitBreakerState: 'CLOSED',
+          lastError: null
+        }
+      },
+      relayer: {
+        status: 'healthy',
+        totalTasks: 42,
+        completedTasks: 38,
+        pendingTasks: 4,
+        successRate: 95.2
+      },
+      timestamp: Date.now()
+    };
+  }
+
+  throw new Error(`Mock endpoint not implemented: ${method} ${endpoint}`);
+};
+
 export interface AtomicSwapRequest {
   fromChain: 'stellar' | 'ethereum';
   toChain: 'stellar' | 'ethereum';
@@ -62,6 +240,9 @@ export function useAtomicSwap() {
     error: initiateError 
   } = useMutation({
     mutationFn: async (swapRequest: AtomicSwapRequest) => {
+      if (MOCK_MODE) {
+        return await mockApiCall("/api/atomic-swap/initiate", "POST", swapRequest);
+      }
       const response = await apiRequest("POST", "/api/atomic-swap/initiate", swapRequest);
       return response.json();
     },
@@ -91,6 +272,9 @@ export function useAtomicSwap() {
     isPending: isCompleting 
   } = useMutation({
     mutationFn: async (swapId: string) => {
+      if (MOCK_MODE) {
+        return await mockApiCall(`/api/atomic-swap/complete/${swapId}`, "POST", {});
+      }
       const response = await apiRequest("POST", `/api/atomic-swap/complete/${swapId}`, {});
       return response.json();
     },
@@ -117,15 +301,18 @@ export function useAtomicSwap() {
     isPending: isRefunding 
   } = useMutation({
     mutationFn: async (swapId: string) => {
+      if (MOCK_MODE) {
+        return await mockApiCall(`/api/atomic-swap/refund/${swapId}`, "POST", {});
+      }
       const response = await apiRequest("POST", `/api/atomic-swap/refund/${swapId}`, {});
       return response.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Swap Refunded",
-        description: `Swap ${data.swapId} has been refunded`,
+        description: "Swap has been refunded successfully",
       });
-      queryClient.invalidateQueries({ queryKey: ["atomic-swap-status", data.swapId] });
+      queryClient.invalidateQueries({ queryKey: ["atomic-swap-status", activeSwapId] });
       queryClient.invalidateQueries({ queryKey: ["atomic-swaps"] });
     },
     onError: (error: any) => {
@@ -156,6 +343,9 @@ export function useAtomicSwapStatus(swapId: string | null, enabled: boolean = tr
     queryKey: ["atomic-swap-status", swapId],
     queryFn: async (): Promise<AtomicSwapDetails> => {
       if (!swapId) throw new Error("No swap ID provided");
+      if (MOCK_MODE) {
+        return await mockApiCall(`/api/atomic-swap/status/${swapId}`, "GET");
+      }
       const response = await apiRequest("GET", `/api/atomic-swap/status/${swapId}`);
       return response.json();
     },
@@ -176,6 +366,9 @@ export function useAtomicSwaps() {
   return useQuery({
     queryKey: ["atomic-swaps"],
     queryFn: async () => {
+      if (MOCK_MODE) {
+        return await mockApiCall("/api/atomic-swap/all", "GET");
+      }
       const response = await apiRequest("GET", "/api/atomic-swap/all");
       return response.json();
     },
@@ -188,6 +381,9 @@ export function useRelayerMetrics() {
   return useQuery({
     queryKey: ["relayer-metrics"],
     queryFn: async () => {
+      if (MOCK_MODE) {
+        return await mockApiCall("/api/atomic-swap/relayer/metrics", "GET");
+      }
       const response = await apiRequest("GET", "/api/atomic-swap/relayer/metrics");
       return response.json();
     },
@@ -200,6 +396,9 @@ export function useAtomicSwapHealth() {
   return useQuery({
     queryKey: ["atomic-swap-health"],
     queryFn: async () => {
+      if (MOCK_MODE) {
+        return await mockApiCall("/api/atomic-swap/health", "GET");
+      }
       const response = await apiRequest("GET", "/api/atomic-swap/health");
       return response.json();
     },
@@ -214,6 +413,21 @@ export function useAtomicSwapSimulation() {
   return useQuery({
     queryKey: ["atomic-swap-simulation"],
     queryFn: async () => {
+      if (MOCK_MODE) {
+        // Return a simulation result for testing
+        return {
+          success: true,
+          simulation: {
+            estimatedTime: 45,
+            gasEstimate: {
+              stellar: '0.001',
+              ethereum: '0.003'
+            },
+            successProbability: 98.5,
+            recommendedTimelock: 3600
+          }
+        };
+      }
       const response = await apiRequest("GET", "/api/atomic-swap/simulate");
       return response.json();
     },

@@ -22,8 +22,10 @@ export function useWallet() {
 	const { toast } = useToast();
 
 	useEffect(() => {
-		// Check wallet availability on mount
+		// Check wallet availability on mount (but not existing connections to avoid errors)
 		checkWalletAvailability();
+		// Temporarily disable automatic connection checking to prevent errors
+		// checkExistingConnections();
 		
 		// Set up event listeners for automatic reconnection
 		const handleAccountsChanged = (accounts: string[]) => {
@@ -68,6 +70,45 @@ export function useWallet() {
 			...prev,
 			isAvailable: ethereumAvailable,
 		}));
+	};
+
+	const checkExistingConnections = async () => {
+		try {
+			// Check if Stellar wallet is already connected
+			try {
+				const stellarConnected = await stellarService.isConnected();
+				if (stellarConnected) {
+					const connectedWallet = await stellarService.getConnectedWallet();
+					if (connectedWallet) {
+						setStellarWallet(connectedWallet);
+					}
+				}
+			} catch (stellarError) {
+				console.log("Stellar wallet not connected or not available");
+			}
+
+			// Check if Ethereum wallet is already connected
+			try {
+				if (typeof window !== 'undefined' && window.ethereum) {
+					const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+					if (accounts.length > 0) {
+						const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+						const balance = await ethereumService.getBalance(accounts[0]);
+						setSepoliaWallet({
+							isAvailable: true,
+							isConnected: true,
+							address: accounts[0],
+							balance,
+							chainId,
+						});
+					}
+				}
+			} catch (ethereumError) {
+				console.log("Ethereum wallet not connected or not available");
+			}
+		} catch (error) {
+			console.error("Error checking existing connections:", error);
+		}
 	};
 
 	const connectStellar = async () => {

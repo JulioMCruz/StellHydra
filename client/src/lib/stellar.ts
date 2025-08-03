@@ -25,19 +25,24 @@ let kit: StellarWalletsKit | null = null;
 
 const initializeKit = () => {
 	if (!kit) {
-		kit = new StellarWalletsKit({
-			network: WalletNetwork.TESTNET,
-			selectedWalletId: XBULL_ID,
-			modules: [
-				new FreighterModule(),
-				new xBullModule(),
-				new AlbedoModule(),
-				new RabetModule(),
-				new LobstrModule(),
-				new HanaModule(),
-				new HotWalletModule(),
-			],
-		});
+		try {
+			kit = new StellarWalletsKit({
+				network: WalletNetwork.TESTNET,
+				selectedWalletId: XBULL_ID,
+				modules: [
+					new FreighterModule(),
+					new xBullModule(),
+					new AlbedoModule(),
+					new RabetModule(),
+					new LobstrModule(),
+					new HanaModule(),
+					new HotWalletModule(),
+				],
+			});
+		} catch (error) {
+			console.error("Error initializing Stellar Wallets Kit:", error);
+			throw error;
+		}
 	}
 	return kit;
 };
@@ -200,10 +205,52 @@ export const stellarService = {
 	async isConnected(): Promise<boolean> {
 		try {
 			const stellarKit = initializeKit();
-			const { address } = await stellarKit.getAddress();
-			return !!address;
+			
+			// Try to get address - if this fails, wallet is not connected
+			try {
+				const result = await stellarKit.getAddress();
+				return !!result.address;
+			} catch (addressError) {
+				// This is expected when wallet is not connected
+				return false;
+			}
 		} catch (error) {
+			console.error("Error checking wallet connection:", error);
 			return false;
+		}
+	},
+
+	async getConnectedWallet(): Promise<StellarWallet | null> {
+		try {
+			const stellarKit = initializeKit();
+			
+			// Try to get address, if it fails the wallet isn't connected
+			let address;
+			try {
+				const result = await stellarKit.getAddress();
+				address = result.address;
+			} catch (addressError) {
+				// Wallet not connected or not available
+				return null;
+			}
+			
+			if (!address) {
+				return null;
+			}
+
+			const balance = await this.getBalance(address);
+			const selectedWalletId = await this.getSelectedWalletId();
+
+			return {
+				isAvailable: true,
+				isConnected: true,
+				address,
+				balance,
+				selectedWalletId: selectedWalletId || undefined,
+			};
+		} catch (error) {
+			console.error("Error getting connected wallet:", error);
+			return null;
 		}
 	},
 
