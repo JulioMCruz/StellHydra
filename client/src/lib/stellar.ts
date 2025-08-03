@@ -1,88 +1,208 @@
-// Stellar SDK integration for wallet connection and transactions
-// Note: In a real implementation, you would install @stellar/stellar-sdk
+import {
+	StellarWalletsKit,
+	WalletNetwork,
+	XBULL_ID,
+	FreighterModule,
+	xBullModule,
+	AlbedoModule,
+	RabetModule,
+	LobstrModule,
+	HanaModule,
+	HotWalletModule,
+} from "@creit.tech/stellar-wallets-kit";
 
 export interface StellarWallet {
-  isAvailable: boolean;
-  isConnected: boolean;
-  address: string;
-  balance: string;
+	isAvailable: boolean;
+	isConnected: boolean;
+	address: string;
+	balance: string;
+	selectedWalletId?: string;
 }
 
-declare global {
-  interface Window {
-    freighter?: {
-      isConnected(): Promise<boolean>;
-      getAddress(): Promise<string>;
-      getBalance(address: string): Promise<string>;
-      signTransaction(transaction: any): Promise<any>;
-    };
-  }
-}
+// Create a singleton instance of the Stellar Wallets Kit
+let kit: StellarWalletsKit | null = null;
+
+const initializeKit = () => {
+	if (!kit) {
+		kit = new StellarWalletsKit({
+			network: WalletNetwork.TESTNET,
+			selectedWalletId: XBULL_ID,
+			modules: [
+				new FreighterModule(),
+				new xBullModule(),
+				new AlbedoModule(),
+				new RabetModule(),
+				new LobstrModule(),
+				new HanaModule(),
+				new HotWalletModule(),
+			],
+		});
+	}
+	return kit;
+};
 
 export const stellarService = {
-  async isFreighterAvailable(): Promise<boolean> {
-    return typeof window !== 'undefined' && !!window.freighter;
-  },
+	async isFreighterAvailable(): Promise<boolean> {
+		try {
+			// For now, let's assume wallets are available if we're in a browser
+			// The actual wallet detection will happen when trying to connect
+			return typeof window !== "undefined";
+		} catch (error) {
+			console.error("Error checking wallet availability:", error);
+			return false;
+		}
+	},
 
-  async connectWallet(): Promise<StellarWallet> {
-    if (!window.freighter) {
-      throw new Error('Freighter wallet not available. Please install Freighter extension.');
-    }
+	async connectWallet(): Promise<StellarWallet> {
+		try {
+			const stellarKit = initializeKit();
 
-    try {
-      const isConnected = await window.freighter.isConnected();
-      if (!isConnected) {
-        throw new Error('Please connect Freighter wallet');
-      }
+			// Open the wallet selection modal
+			await stellarKit.openModal({
+				onWalletSelected: async (option) => {
+					await stellarKit.setWallet(option.id);
+				},
+				modalTitle: "Connect Stellar Wallet",
+				notAvailableText: "No wallets available",
+			});
 
-      const address = await window.freighter.getAddress();
-      const balance = await this.getBalance(address);
+			// Get the connected wallet address
+			const { address } = await stellarKit.getAddress();
 
-      return {
-        isAvailable: true,
-        isConnected: true,
-        address,
-        balance,
-      };
-    } catch (error) {
-      console.error('Failed to connect Stellar wallet:', error);
-      throw error;
-    }
-  },
+			// Try to get balance, but handle new accounts
+			let balance = "0";
+			try {
+				balance = await this.getBalance(address);
+			} catch (error) {
+				console.log("New account or balance fetch failed, using 0");
+				balance = "0";
+			}
 
-  async getBalance(address: string): Promise<string> {
-    try {
-      // In a real implementation, you would use Stellar SDK to fetch balance
-      // For now, we'll simulate fetching balance
-      return "1245.67";
-    } catch (error) {
-      console.error('Failed to fetch Stellar balance:', error);
-      return "0";
-    }
-  },
+			return {
+				isAvailable: true,
+				isConnected: true,
+				address,
+				balance,
+				selectedWalletId: "stellar-wallet",
+			};
+		} catch (error) {
+			console.error("Failed to connect Stellar wallet:", error);
+			throw new Error(
+				"Failed to connect Stellar wallet. Please try again."
+			);
+		}
+	},
 
-  async submitTransaction(transaction: any): Promise<string> {
-    if (!window.freighter) {
-      throw new Error('Freighter wallet not available');
-    }
+	async getBalance(address: string): Promise<string> {
+		try {
+			// Use Stellar SDK to fetch balance directly
+			const response = await fetch(
+				`https://horizon-testnet.stellar.org/accounts/${address}`
+			);
 
-    try {
-      const signedTx = await window.freighter.signTransaction(transaction);
-      // In a real implementation, you would submit to Stellar network
-      // For now, we'll return a mock transaction hash
-      return `stellar_tx_${Date.now()}`;
-    } catch (error) {
-      console.error('Failed to submit Stellar transaction:', error);
-      throw error;
-    }
-  },
+			if (!response.ok) {
+				if (response.status === 404) {
+					// Account doesn't exist yet (new account)
+					return "0";
+				}
+				throw new Error(`Failed to fetch account: ${response.status}`);
+			}
 
-  disconnect(): StellarWallet {
-    return {
-      isAvailable: this.isFreighterAvailable() as any,
-      isConnected: false,
-      address: "",
-      balance: "0",
-    };
-  }
+			const account = await response.json();
+
+			// Find XLM balance
+			const xlmBalance = account.balances.find(
+				(balance: any) => balance.asset_type === "native"
+			);
+
+			return xlmBalance ? xlmBalance.balance : "0";
+		} catch (error) {
+			console.error("Failed to fetch Stellar balance:", error);
+			// Return 0 for new accounts or errors
+			return "0";
+		}
+	},
+
+	async submitTransaction(transaction: any): Promise<string> {
+		try {
+			const stellarKit = initializeKit();
+			const { address } = await stellarKit.getAddress();
+
+			// Sign the transaction
+			const { signedTxXdr } = await stellarKit.signTransaction(
+				transaction,
+				{
+					address,
+					networkPassphrase: WalletNetwork.TESTNET,
+				}
+			);
+
+			// For now, return a mock transaction hash
+			// In a real implementation, you would submit to the Stellar network
+			return `stellar_tx_${Date.now()}`;
+		} catch (error) {
+			console.error("Failed to submit Stellar transaction:", error);
+			throw error;
+		}
+	},
+
+	async signTransaction(transactionXdr: string): Promise<string> {
+		try {
+			const stellarKit = initializeKit();
+			const { address } = await stellarKit.getAddress();
+
+			const { signedTxXdr } = await stellarKit.signTransaction(
+				transactionXdr,
+				{
+					address,
+					networkPassphrase: WalletNetwork.TESTNET,
+				}
+			);
+
+			return signedTxXdr;
+		} catch (error) {
+			console.error("Failed to sign Stellar transaction:", error);
+			throw error;
+		}
+	},
+
+	async setWallet(walletId: string): Promise<void> {
+		try {
+			const stellarKit = initializeKit();
+			await stellarKit.setWallet(walletId);
+		} catch (error) {
+			console.error("Failed to set wallet:", error);
+			throw error;
+		}
+	},
+
+	async getSelectedWalletId(): Promise<string | null> {
+		try {
+			// For now, return a default wallet ID
+			return "stellar-wallet";
+		} catch (error) {
+			console.error("Failed to get selected wallet ID:", error);
+			return null;
+		}
+	},
+
+	async isConnected(): Promise<boolean> {
+		try {
+			const stellarKit = initializeKit();
+			const { address } = await stellarKit.getAddress();
+			return !!address;
+		} catch (error) {
+			return false;
+		}
+	},
+
+	disconnect(): StellarWallet {
+		return {
+			isAvailable: false,
+			isConnected: false,
+			address: "",
+			balance: "0",
+			selectedWalletId: undefined,
+		};
+	},
 };
