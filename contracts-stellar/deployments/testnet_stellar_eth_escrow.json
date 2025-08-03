@@ -1,0 +1,14 @@
+{
+  "network": "testnet",
+  "contract_name": "stellar-eth-escrow",
+  "wasm_hash": "78418d94f99de09c1c7efd552b57e66aaafb441187acd0f563260a61e715af19",
+  "wasm_file": "target/wasm32v1-none/release/stellar_eth_escrow.wasm",
+  "built_at": "2025-08-03T13:41:52Z",
+  "build_info": {
+    "stellar_cli_version": "stellar 22.8.2",
+    "target": "wasm32v1-none",
+    "exported_functions": ["_", "complete_escrow", "create_escrow", "get_escrow", "get_escrows_by_maker", "get_stats", "initialize", "lock_escrow", "refund_escrow"]
+  },
+  "deployment_status": "ready_for_deployment",
+  "deployment_notes": "Contract successfully built with stellar CLI. WASM ready for deployment when network issues are resolved."
+}

@@ -4,6 +4,7 @@
 export interface EthereumWallet {
   isAvailable: boolean;
   isConnected: boolean;
+  isConnecting?: boolean;
   address: string;
   balance: string;
   chainId: string;
@@ -39,7 +40,7 @@ export const ethereumService = {
       });
 
       if (!accounts.length) {
-        throw new Error('No accounts found');
+        throw new Error('No accounts found. Please unlock MetaMask and try again.');
       }
 
       // Check if on Sepolia network
@@ -67,12 +68,23 @@ export const ethereumService = {
                   symbol: 'ETH',
                   decimals: 18,
                 },
-                rpcUrls: ['https://sepolia.infura.io/v3/'],
+                rpcUrls: ['https://ethereum-sepolia-rpc.publicnode.com'],
                 blockExplorerUrls: ['https://sepolia.etherscan.io/'],
               }],
             });
+          } else {
+            throw new Error(`Failed to switch to Sepolia network: ${switchError.message}`);
           }
         }
+      }
+
+      // Re-check chain ID after switching
+      const finalChainId = await window.ethereum.request({
+        method: 'eth_chainId',
+      });
+
+      if (finalChainId !== SEPOLIA_CHAIN_ID) {
+        throw new Error('Please manually switch to Sepolia Testnet in MetaMask');
       }
 
       const address = accounts[0];
@@ -83,11 +95,19 @@ export const ethereumService = {
         isConnected: true,
         address,
         balance,
-        chainId: SEPOLIA_CHAIN_ID,
+        chainId: finalChainId,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to connect Ethereum wallet:', error);
-      throw error;
+      
+      // Provide more specific error messages
+      if (error.code === 4001) {
+        throw new Error('Connection rejected. Please approve the connection in MetaMask.');
+      } else if (error.code === -32002) {
+        throw new Error('Connection request pending. Please check MetaMask.');
+      } else {
+        throw new Error(error.message || 'Failed to connect to MetaMask. Please try again.');
+      }
     }
   },
 

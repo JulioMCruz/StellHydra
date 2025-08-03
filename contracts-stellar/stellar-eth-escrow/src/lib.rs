@@ -1,6 +1,6 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contractimpl, contracttype, contracterror, symbol_short, Address, Bytes, Env, Map, Symbol, Vec,
+    contract, contractimpl, contracttype, contracterror, symbol_short, token, Address, Bytes, Env, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -42,6 +42,8 @@ pub enum Error {
     InvalidSecret = 5,
     TimelockExpired = 6,
     TimelockNotExpired = 7,
+    TransferFailed = 8,
+    InsufficientBalance = 9,
 }
 
 #[contractimpl]
@@ -86,6 +88,9 @@ impl StellarEthEscrow {
         if escrows.contains_key(escrow_id.clone()) {
             return Err(Error::EscrowExists);
         }
+
+        // Handle asset deposit
+        Self::handle_deposit(&env, &asset, &maker, amount)?;
 
         // Create escrow
         let escrow = Escrow {
@@ -193,12 +198,17 @@ impl StellarEthEscrow {
         escrow.status = 2; // completed
         escrow.secret = Some(secret.clone());
 
+        // Store the amount and asset info before moving escrow
+        let transfer_amount = escrow.amount;
+        let asset_address = escrow.asset.clone();
+        let maker_address = escrow.maker.clone();
+
         // Store updated escrow
         escrows.set(escrow_id.clone(), escrow);
         env.storage().instance().set(&ESCROWS, &escrows);
 
-        // Note: In a real implementation, you would transfer the assets here
-        // using the Stellar token interface
+        // Transfer assets to resolver
+        Self::transfer_asset(&env, &asset_address, &maker_address, &resolver, transfer_amount)?;
 
         // Emit event
         env.events().publish(
@@ -241,8 +251,8 @@ impl StellarEthEscrow {
         escrows.set(escrow_id.clone(), escrow.clone());
         env.storage().instance().set(&ESCROWS, &escrows);
 
-        // Note: In a real implementation, you would refund the assets here
-        // using the Stellar token interface
+        // Refund assets to maker
+        Self::refund_asset(&env, &escrow.asset, &escrow.maker, escrow.amount)?;
 
         // Emit event
         env.events().publish(
@@ -286,9 +296,9 @@ impl StellarEthEscrow {
     /// Helper function to generate unique escrow ID
     fn generate_escrow_id(
         env: &Env,
-        maker: &Address,
+        _maker: &Address,
         amount: i128,
-        asset: &Address,
+        _asset: &Address,
     ) -> Bytes {
         // Get and increment counter
         let mut counter: u64 = env.storage().instance().get(&COUNTER).unwrap_or(0);
@@ -355,7 +365,7 @@ impl StellarEthEscrow {
             .get(&ESCROWS)
             .unwrap_or_else(|| Map::new(&env));
 
-        let total_count = escrows.len();
+        let _total_count = escrows.len();
         let mut pending = 0;
         let mut locked = 0;
         let mut completed = 0;
@@ -374,6 +384,52 @@ impl StellarEthEscrow {
         let counter: u64 = env.storage().instance().get(&COUNTER).unwrap_or(0);
         
         (counter, pending, locked, completed, refunded)
+    }
+
+    /// Handle escrow deposit during creation
+    fn handle_deposit(
+        env: &Env,
+        asset: &Address,
+        from: &Address,
+        amount: i128,
+    ) -> Result<(), Error> {
+        let token_client = token::Client::new(env, asset);
+        
+        // Transfer tokens from maker to contract
+        token_client.transfer(from, &env.current_contract_address(), &amount);
+        
+        Ok(())
+    }
+
+    /// Transfer asset from contract to recipient
+    fn transfer_asset(
+        env: &Env,
+        _asset: &Address,
+        _from: &Address,
+        to: &Address,
+        _amount: i128,
+    ) -> Result<(), Error> {
+        let token_client = token::Client::new(env, _asset);
+        
+        // Transfer tokens from contract to recipient
+        token_client.transfer(&env.current_contract_address(), to, &_amount);
+        
+        Ok(())
+    }
+
+    /// Refund asset from contract to original owner
+    fn refund_asset(
+        env: &Env,
+        asset: &Address,
+        to: &Address,
+        amount: i128,
+    ) -> Result<(), Error> {
+        let token_client = token::Client::new(env, asset);
+        
+        // Transfer tokens from contract back to maker
+        token_client.transfer(&env.current_contract_address(), to, &amount);
+        
+        Ok(())
     }
 }
 

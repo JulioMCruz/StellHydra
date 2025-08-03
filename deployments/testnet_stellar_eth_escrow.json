@@ -1,0 +1,11 @@
+{
+  "contractId": "CBCHZZ46MXZJQKF75LY4SNYEGTNW5VJPGD5FBLAHVVD7UQJNNGKZRDVF",
+  "network": "testnet",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "deployedAt": "2025-08-03T14:41:00.000Z",
+  "deployer": "GDHKGVHM3YUNIE7TFGN46BAGETEZB34OQBMXWJLVPUW4ML6I5LGWVFAM",
+  "wasmHash": "c9d29ea3325451d853d17dca032e7d745fece957b71c8982538e3e81cab8be9d",
+  "status": "ready_for_deployment",
+  "note": "Contract compiled successfully but deployment blocked by Soroban testnet reference-types limitation"
+}

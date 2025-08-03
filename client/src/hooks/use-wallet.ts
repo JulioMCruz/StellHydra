@@ -24,6 +24,36 @@ export function useWallet() {
 	useEffect(() => {
 		// Check wallet availability on mount
 		checkWalletAvailability();
+		
+		// Set up event listeners for automatic reconnection
+		const handleAccountsChanged = (accounts: string[]) => {
+			if (accounts.length === 0) {
+				// User disconnected
+				setSepoliaWallet(ethereumService.disconnect());
+			} else {
+				// Account changed, update connection
+				refreshBalances();
+			}
+		};
+
+		const handleChainChanged = (chainId: string) => {
+			// Chain changed, refresh connection
+			refreshBalances();
+		};
+
+		// Add MetaMask event listeners
+		if (typeof window !== 'undefined' && window.ethereum) {
+			window.ethereum.on('accountsChanged', handleAccountsChanged);
+			window.ethereum.on('chainChanged', handleChainChanged);
+		}
+
+		// Cleanup event listeners
+		return () => {
+			if (typeof window !== 'undefined' && window.ethereum) {
+				window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+				window.ethereum.removeListener('chainChanged', handleChainChanged);
+			}
+		};
 	}, []);
 
 	const checkWalletAvailability = async () => {
@@ -42,6 +72,7 @@ export function useWallet() {
 
 	const connectStellar = async () => {
 		try {
+			setStellarWallet(prev => ({ ...prev, isConnecting: true }));
 			const wallet = await stellarService.connectWallet();
 			setStellarWallet(wallet);
 			toast({
@@ -52,9 +83,11 @@ export function useWallet() {
 				)}... with ${wallet.selectedWalletId || "unknown wallet"}`,
 			});
 		} catch (error: any) {
+			setStellarWallet(prev => ({ ...prev, isConnecting: false }));
+			console.error("Stellar connection error:", error);
 			toast({
-				title: "Connection Failed",
-				description: error.message,
+				title: "Stellar Connection Failed",
+				description: error.message || "Please install Freighter or another Stellar wallet",
 				variant: "destructive",
 			});
 		}
@@ -62,6 +95,7 @@ export function useWallet() {
 
 	const connectSepolia = async () => {
 		try {
+			setSepoliaWallet(prev => ({ ...prev, isConnecting: true }));
 			const wallet = await ethereumService.connectWallet();
 			setSepoliaWallet(wallet);
 			toast({
@@ -69,9 +103,11 @@ export function useWallet() {
 				description: `Connected to ${wallet.address.slice(0, 8)}...`,
 			});
 		} catch (error: any) {
+			setSepoliaWallet(prev => ({ ...prev, isConnecting: false }));
+			console.error("Ethereum connection error:", error);
 			toast({
-				title: "Connection Failed",
-				description: error.message,
+				title: "Ethereum Connection Failed",
+				description: error.message || "Please install MetaMask and try again",
 				variant: "destructive",
 			});
 		}

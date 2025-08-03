@@ -9,6 +9,7 @@ import {
 import { z } from "zod";
 import fusionRoutes from "./routes/fusion";
 import bridgeRoutes from "./routes/bridge";
+import atomicSwapRoutes from "./routes/atomic-swap";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -17,6 +18,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 	// Register Bridge routes
 	app.use("/api/bridge", bridgeRoutes);
+
+	// Register Atomic Swap routes
+	app.use("/api/atomic-swap", atomicSwapRoutes);
 
 	// Get DEX prices for token pair
 	app.get("/api/dex-prices/:fromToken/:toToken", async (req, res) => {
