@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDownUp, Shield, Clock, CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react";
+import { ArrowDownUp, Shield, Clock, CheckCircle, XCircle, AlertTriangle, Loader2, TestTube } from "lucide-react";
 import { TokenSelector } from "./token-selector";
 import { useWallet } from "@/hooks/use-wallet";
 import { 
@@ -75,7 +75,7 @@ export function AtomicSwapInterface() {
   const [toChain, setToChain] = useState<'stellar' | 'ethereum'>("ethereum");
   const [timelock, setTimelock] = useState("3600");
 
-  const { stellarWallet, sepoliaWallet } = useWallet();
+  const { stellarWallet, sepoliaWallet, connectStellar, connectSepolia } = useWallet();
   
   // Debug wallet state
   console.log("AtomicSwapInterface - Stellar wallet state:", stellarWallet);
@@ -146,6 +146,14 @@ export function AtomicSwapInterface() {
 
   return (
     <div className="space-y-6">
+      {/* Mock Mode Indicator */}
+      <Alert className="bg-orange-500/10 border-orange-500/20">
+        <TestTube className="w-4 h-4 text-orange-400" />
+        <AlertDescription className="text-orange-300">
+          <strong>Demo Mode Active</strong> - Using mock responses for demonstration. All swaps are simulated.
+        </AlertDescription>
+      </Alert>
+
       {/* System Health Monitor */}
       <SystemHealthMonitor />
 
@@ -296,6 +304,37 @@ export function AtomicSwapInterface() {
               </span>
             </div>
           </div>
+
+          {/* Wallet Connection Buttons */}
+          {(!stellarWallet.isConnected || !sepoliaWallet.isConnected) && (
+            <div className="mt-4 space-y-2">
+              {!stellarWallet.isConnected && (
+                <Button
+                  onClick={connectStellar}
+                  disabled={stellarWallet.isConnecting}
+                  className="w-full bg-stellar/20 hover:bg-stellar/30 text-white border border-stellar/30"
+                  size="sm"
+                >
+                  {stellarWallet.isConnecting ? "Connecting..." : "Connect Stellar Wallet"}
+                </Button>
+              )}
+              {!sepoliaWallet.isConnected && (
+                <Button
+                  onClick={connectSepolia}
+                  disabled={sepoliaWallet.isConnecting || !sepoliaWallet.isAvailable}
+                  className="w-full bg-ethereum/20 hover:bg-ethereum/30 text-white border border-ethereum/30"
+                  size="sm"
+                >
+                  {sepoliaWallet.isConnecting 
+                    ? "Connecting..." 
+                    : sepoliaWallet.isAvailable 
+                    ? "Connect Sepolia Wallet" 
+                    : "MetaMask Not Available"
+                  }
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Action Button */}
           <Button

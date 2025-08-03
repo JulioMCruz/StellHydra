@@ -92,7 +92,7 @@ export default function Bridge() {
 									)}
 									
 									{/* Test Section */}
-									<Card className="mb-6">
+									{/* <Card className="mb-6">
 										<CardHeader>
 											<CardTitle>
 												🧪 Cross-Chain Fusion+ Test
@@ -124,7 +124,7 @@ export default function Bridge() {
 												</div>
 											)}
 										</CardContent>
-									</Card>
+									</Card> */}
 
 									{/* Bridge Interface with Tabs */}
 									<Tabs defaultValue="bridge" className="w-full">
