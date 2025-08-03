@@ -29,7 +29,7 @@ export default function Bridge() {
   return (
     <MainLayout>
       <div className="flex justify-center items-start min-h-full p-4 lg:p-6">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-screen-lg min-w-screen-sm">
           <BridgeInterface 
             onRouteUpdate={setRouteInfo} 
             routeInfo={routeInfo}

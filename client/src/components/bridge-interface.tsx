@@ -146,6 +146,7 @@ export function BridgeInterface({
                     </div>
                   </div>
                 </div>
+              </div>
           <div className="space-y-4">
             {/* From Section */}
             <div className={`glass-card rounded-lg p-3 border ${fromNetwork === 'stellar' ? 'border-stellar/20' : 'border-ethereum/20'}`}>
