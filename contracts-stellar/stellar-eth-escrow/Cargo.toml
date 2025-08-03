@@ -1,5 +1,3 @@
-[workspace]
-
 [package]
 name = "stellar-eth-escrow"
 version = "0.1.0"
@@ -12,10 +10,10 @@ description = "Hash Time Locked Contract (HTLC) for Stellar-Ethereum atomic swap
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = "22"
+soroban-sdk = { workspace = true }
 
 [dev-dependencies]
-soroban-sdk = { version = "22", features = ["testutils"] }
+soroban-sdk = { workspace = true, features = ["testutils"] }
 
 [features]
 testutils = ["soroban-sdk/testutils"]

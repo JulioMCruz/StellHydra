@@ -3,10 +3,11 @@ resolver = "2"
 members = [
     "stellar-eth-escrow",
     "simple-test",
+    "bridge-contract",
 ]
 
 [workspace.dependencies]
-soroban-sdk = "22"
+soroban-sdk = "22.0.0"
 
 [profile.release]
 opt-level = "z"

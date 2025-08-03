@@ -7,6 +7,7 @@ Soroban smart contract implementation for StellHydra's cross-chain bridge system
 ```
 contracts-stellar/
 ├── stellar-eth-escrow/     # HTLC contract for Stellar-Ethereum atomic swaps
+├── bridge-contract/        # Main bridge contract for cross-chain operations
 ├── simple-test/            # Simple test contract for deployment verification  
 ├── hello-world-test/       # Official Stellar template (for testing)
 └── README.md              # This documentation
@@ -14,12 +15,23 @@ contracts-stellar/
 
 ## 📋 Contract Status
 
-### 🌟 **Stellar-Ethereum Escrow Contract**
+### 🌟 **StellHydra Bridge Contract**
 
 | Property | Value |
 |----------|-------|
 | **Status** | ✅ **Production Ready** |
-| **Contract ID** | `PENDING_TESTNET_INFRASTRUCTURE_FIX` |
+| **Contract ID** | `PENDING_TESTNET_DEPLOYMENT` |
+| **WASM Hash** | `2dd29444685d26226f4e56d84fb644c3a334d8875a53e78af064a91737e301d4` |
+| **SDK Version** | Soroban SDK v22.0.8 |
+| **Exported Functions** | 9 functions |
+| **Build Target** | `wasm32v1-none` |
+
+### 🔒 **Stellar-Ethereum Escrow Contract**
+
+| Property | Value |
+|----------|-------|
+| **Status** | ✅ **Production Ready** |
+| **Contract ID** | `PENDING_TESTNET_DEPLOYMENT` |
 | **WASM Hash** | `06ee60bd4d6daacbf503767722cf4f7cbf8a48eef50decaad30775ecc4fad5bf` |
 | **SDK Version** | Soroban SDK v22.0.8 |
 | **Test Coverage** | 5/5 tests passing (100%) |
@@ -28,9 +40,10 @@ contracts-stellar/
 ### 📊 **Deployment Information**
 
 - **Network**: Stellar Testnet (pending infrastructure fix)
-- **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
-- **Build Date**: July 30, 2025
-- **WASM File**: `target/wasm32v1-none/release/stellar_eth_escrow.wasm`
+- **Deployer**: `alice` (testnet account)
+- **Build Date**: January 3, 2025
+- **Bridge WASM**: `target/wasm32v1-none/release/stellhydra_bridge.wasm`
+- **Escrow WASM**: `target/wasm32v1-none/release/stellar_eth_escrow.wasm`
 
 ### 🔗 **Resources**
 
@@ -336,9 +349,23 @@ sequenceDiagram
    ls -la target/wasm32v1-none/release/stellar_eth_escrow.wasm
    ```
 
-### Deploy Contract
+### Deploy Contracts
 
-#### 🚀 **Deploy to Testnet** (when infrastructure is fixed)
+#### 🚀 **Deploy Bridge Contract to Testnet**
+
+```bash
+# Quick deployment using the deployment script
+./deploy-bridge.sh
+
+# Or manually using Makefile
+cd bridge-contract
+make setup-network
+make fund-alice
+make build
+make deploy-testnet
+```
+
+#### 🚀 **Deploy Escrow Contract to Testnet**
 
 1. **Fund deployer account**:
    ```bash
@@ -395,6 +422,37 @@ stellar contract invoke \
 ```
 
 ## 📋 Contract Overview
+
+### 🌉 **StellHydra Bridge Contract**
+
+**Status**: ✅ **Production Ready** (pending testnet infrastructure fix)
+
+Main bridge contract for cross-chain operations between Stellar and Ethereum networks:
+
+**Core Features**:
+- **Bridge Request Management**: Create and track cross-chain bridge requests
+- **Fee Management**: Configurable base fees and percentage-based fees
+- **Admin Controls**: Pause/unpause bridge, update configuration
+- **Multi-Token Support**: Support for any Stellar token
+- **Emergency Controls**: Admin emergency withdrawal functionality
+
+**API Functions**:
+- `initialize(admin, fee_recipient, base_fee, fee_percentage, min_amount, max_amount)` - Initialize bridge
+- `create_bridge_request(user, from_token, to_chain, to_address, amount)` - Create bridge request
+- `get_bridge_request(request_id)` - Get bridge request details
+- `update_request_status(request_id, new_status, tx_hash)` - Update request status (admin)
+- `get_config()` - Get bridge configuration
+- `update_config(...)` - Update bridge configuration (admin)
+- `get_request_count()` - Get total number of requests
+- `emergency_withdraw(token, to, amount)` - Emergency withdrawal (admin)
+
+**Security Features**:
+- ✅ Role-based access control (admin-only functions)
+- ✅ Amount validation (min/max limits)
+- ✅ Pause mechanism for emergency stops
+- ✅ Token transfer verification
+- ✅ Request ID generation with collision protection
+- ✅ Comprehensive event emission for monitoring
 
 ### 🔒 **Stellar-Ethereum Escrow Contract**
 
