@@ -73,14 +73,17 @@ StellHydra uses **Soroban smart contracts** on the Stellar network for decentral
 
 | Contract | Status | Description |
 |----------|--------|-------------|
+| **bridge-contract** | ✅ **Production Ready** | Main bridge contract for cross-chain operations |
 | **stellar-eth-escrow** | ✅ **Production Ready** | HTLC contract for atomic Stellar-Ethereum swaps |
 | **simple-test** | ✅ **Built** | Simple test contract for deployment verification |
 | **hello-world-test** | ✅ **Built** | Official Stellar template for testing |
 
 ### 🚀 Smart Contract Features
 
+- **Bridge Management**: Complete cross-chain request lifecycle management
 - **HTLC Implementation**: Hash Time Locked Contracts for secure atomic swaps
-- **Cross-Chain Bridge**: Asset locking/unlocking with time-based protection
+- **Fee Management**: Configurable fees with admin controls
+- **Multi-Token Support**: Support for any Stellar asset
 - **Atomic Swaps**: Complete cross-chain transactions with secret reveal mechanism
 - **Refund Protection**: Automatic refunds after timelock expiry
 - **Security Standards**: Comprehensive authorization and validation system
@@ -98,26 +101,45 @@ cargo install --locked soroban-cli
 # Build and test contracts
 ./scripts/test.sh
 
-# Deploy to testnet
+# Deploy bridge contract to testnet
+./deploy-bridge.sh
+
+# Deploy individual contracts
 ./scripts/deploy.sh testnet simple-test
 ```
 
-### 🔗 Contract Status
+### 🔗 Contract Status & Explorer Links
+
+#### 📋 **Stellar Contracts Status**
+
+| Contract | Status | WASM Hash | Contract ID |
+|----------|--------|-----------|-------------|
+| **bridge-contract** | ✅ Production Ready | `2dd29444...` | `PENDING_DEPLOYMENT` |
+| **stellar-eth-escrow** | ✅ Production Ready | `06ee60bd...` | `PENDING_DEPLOYMENT` |
 
 - **Network**: Stellar Testnet (pending infrastructure fix)
-- **Main Contract**: `stellar-eth-escrow` (Production Ready)
-- **WASM Hash**: `06ee60bd4d6daacbf503767722cf4f7cbf8a48eef50decaad30775ecc4fad5bf`
-- **Test Coverage**: 5/5 tests passing (100%)
-- **Deployer**: `GBXPKLRTMHH3NWEE32YSLZMRSBBQ6ITJCME7FK3P5SB7XEKRNJN2F7IS`
-- **Explorer**: [View on Stellar Explorer](https://testnet.stellarchain.io)
+- **Deployer**: `alice` (testnet account)
+
+#### 🔗 **Stellar Explorer Links**
+
+**Primary Explorer (StellarChain)**:
+- **Testnet Explorer**: [https://testnet.stellarchain.io](https://testnet.stellarchain.io)
+- **Bridge Contract**: `https://testnet.stellarchain.io/contracts/{BRIDGE_CONTRACT_ID}` (pending deployment)
+- **HTLC Contract**: `https://testnet.stellarchain.io/contracts/{ESCROW_CONTRACT_ID}` (pending deployment)
+
+**Alternative Explorer (Stellar Expert)**:
+- **Testnet Explorer**: [https://stellar.expert/explorer/testnet](https://stellar.expert/explorer/testnet)
+- **Bridge Contract**: `https://stellar.expert/explorer/testnet/contract/{BRIDGE_CONTRACT_ID}` (pending deployment)
+- **HTLC Contract**: `https://stellar.expert/explorer/testnet/contract/{ESCROW_CONTRACT_ID}` (pending deployment)
 
 ### 📚 **Smart Contract Documentation**
 
 For comprehensive technical documentation, deployment guides, and API references:
 
 **📖 [Stellar Contracts Documentation →](./contracts-stellar/README.md)**
-- HTLC implementation details
-- Deployment procedures  
+- Bridge contract implementation with fee management
+- HTLC implementation details for atomic swaps
+- Deployment procedures for all contracts
 - API reference and examples
 - Testing and development guides
 
@@ -127,9 +149,9 @@ For comprehensive technical documentation, deployment guides, and API references
 
 StellHydra uses **Ethereum smart contracts** on Sepolia testnet for cross-chain atomic swaps with Hash Time Locked Contracts (HTLC):
 
-| Contract | Network | Address | Status |
-|----------|---------|---------|--------|
-| **StellarEthereumEscrow** | Sepolia | `0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940` | ✅ **DEPLOYED & VERIFIED** |
+| Contract | Network | Address | Status | Explorer |
+|----------|---------|---------|--------|---------| 
+| **StellarEthereumEscrow** | Sepolia | `0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940` | ✅ **DEPLOYED & VERIFIED** | [View on Etherscan](https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940) |
 
 ### 🚀 EVM Contract Features
 
@@ -185,10 +207,23 @@ For comprehensive technical documentation, deployment guides, and integration ex
 
 ## 🔧 Configuration
 
-### Supported Networks
-- **Stellar Mainnet** - For production use
+### Supported Networks & Explorers
+
+#### 🌟 **Stellar Network**
 - **Stellar Testnet** - For development/testing
+  - **RPC**: `https://soroban-testnet.stellar.org:443`
+  - **Explorer**: [StellarChain Testnet](https://testnet.stellarchain.io)
+  - **Alternative**: [Stellar Expert Testnet](https://stellar.expert/explorer/testnet)
+- **Stellar Mainnet** - For production use
+  - **RPC**: `https://soroban-rpc.stellar.org:443`
+  - **Explorer**: [StellarChain Mainnet](https://stellarchain.io)
+  - **Alternative**: [Stellar Expert Mainnet](https://stellar.expert/explorer/public)
+
+#### ⚡ **Ethereum Network**
 - **Ethereum Sepolia** - Testnet for Ethereum integration
+  - **RPC**: `https://sepolia.infura.io/v3/{API_KEY}`
+  - **Explorer**: [Etherscan Sepolia](https://sepolia.etherscan.io)
+  - **Alternative**: [Blockscout Sepolia](https://eth-sepolia.blockscout.com)
 
 ### Supported Wallets
 - **Freighter** - Stellar wallet extension
@@ -403,9 +438,10 @@ graph LR
 │   ├── bridge/            # Bridge simulation
 │   └── wallets/           # Wallet management
 ├── contracts-stellar/      # Stellar Soroban Smart Contracts
-│   ├── test-contract/     # Enhanced test contract
+│   ├── bridge-contract/   # Main bridge contract (production ready)
+│   ├── stellar-eth-escrow/# HTLC contract for atomic swaps
 │   ├── simple-test/       # Simple counter contract (deployed)
-│   ├── bridge-contract/   # Cross-chain bridge logic
+│   ├── test-contract/     # Enhanced test contract
 │   ├── price-oracle/      # DEX price aggregation
 │   ├── liquidity-pool/    # AMM liquidity pools
 │   ├── router/            # DEX aggregation router
@@ -874,6 +910,26 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support, email julio@stellhydra.com or create an issue in this repository.
+
+## 🔗 Quick Links
+
+### 📊 **Block Explorers**
+
+#### 🌟 Stellar Network
+- **Testnet**: [testnet.stellarchain.io](https://testnet.stellarchain.io) | [stellar.expert/explorer/testnet](https://stellar.expert/explorer/testnet)
+- **Mainnet**: [stellarchain.io](https://stellarchain.io) | [stellar.expert/explorer/public](https://stellar.expert/explorer/public)
+
+#### ⚡ Ethereum Network  
+- **Sepolia**: [sepolia.etherscan.io](https://sepolia.etherscan.io) | [eth-sepolia.blockscout.com](https://eth-sepolia.blockscout.com)
+
+### 📋 **Live Contracts**
+
+#### 🌟 Stellar Contracts (Pending Deployment)
+- **Bridge Contract**: `PENDING_DEPLOYMENT` (Ready for testnet)
+- **HTLC Contract**: `PENDING_DEPLOYMENT` (Ready for testnet)
+
+#### ⚡ Ethereum Contracts
+- **StellarEthereumEscrow**: [`0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940`](https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940) ✅ Verified
 
 ---
 
