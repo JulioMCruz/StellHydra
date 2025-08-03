@@ -1,13 +1,16 @@
-import Server from "@stellar/stellar-sdk";
+import * as StellarSdk from '@stellar/stellar-sdk';
 import { EventEmitter } from "events";
 import { RelayerConfig } from "../config";
 import { logger } from "../utils/logger";
+import { StellarEscrowClient } from "../../lib/stellar-escrow-client";
 
 interface StellarNetworkConfig {
 	rpcUrl: string;
 	networkPassphrase: string;
 	bridgeContract: string;
 	escrowContract: string;
+	secretKey: string;
+	network: 'testnet' | 'mainnet';
 }
 
 interface BridgeEvent {
@@ -36,16 +39,28 @@ interface EscrowEvent {
 export class StellarMonitor extends EventEmitter {
 	private config: RelayerConfig;
 	private networkConfig: StellarNetworkConfig;
-	private server: Server;
+	private server: StellarSdk.Horizon.Server;
+	private escrowClient?: StellarEscrowClient;
 	private isRunning: boolean = false;
 	private lastProcessedLedger: number = 0;
 	private pollingInterval: NodeJS.Timeout | null = null;
+	private startTime?: number;
 
 	constructor(networkConfig: StellarNetworkConfig, config: RelayerConfig) {
 		super();
 		this.networkConfig = networkConfig;
 		this.config = config;
-		this.server = new Stellar.Server(networkConfig.rpcUrl);
+		this.server = new StellarSdk.Horizon.Server(networkConfig.rpcUrl);
+		
+		// Initialize escrow client if contract address is available
+		if (networkConfig.escrowContract && networkConfig.secretKey) {
+			this.escrowClient = new StellarEscrowClient({
+				contractId: networkConfig.escrowContract,
+				network: networkConfig.network,
+				rpcUrl: networkConfig.rpcUrl.replace('horizon', 'soroban-rpc'),
+				secretKey: networkConfig.secretKey,
+			});
+		}
 	}
 
 	async start(): Promise<void> {
@@ -57,10 +72,11 @@ export class StellarMonitor extends EventEmitter {
 		try {
 			logger.info("📡 Starting Stellar monitor...");
 			this.isRunning = true;
+			this.startTime = Date.now();
 
 			// Get initial ledger
-			const latestLedger = await this.server.getLatestLedger();
-			this.lastProcessedLedger = latestLedger.sequence - 1;
+			const latestLedger = await this.server.ledgers().order('desc').limit(1).call();
+			this.lastProcessedLedger = latestLedger.records[0].sequence - 1;
 
 			// Start polling
 			this.startPolling();
@@ -107,8 +123,8 @@ export class StellarMonitor extends EventEmitter {
 
 	private async pollEvents(): Promise<void> {
 		try {
-			const latestLedger = await this.server.getLatestLedger();
-			const currentLedger = latestLedger.sequence;
+			const latestLedger = await this.server.ledgers().order('desc').limit(1).call();
+			const currentLedger = latestLedger.records[0].sequence;
 
 			if (currentLedger <= this.lastProcessedLedger) {
 				return;
@@ -131,8 +147,6 @@ export class StellarMonitor extends EventEmitter {
 
 	private async processLedger(ledgerSequence: number): Promise<void> {
 		try {
-			const ledger = await this.server.getLedger(ledgerSequence);
-
 			// Get transactions for this ledger
 			const transactions = await this.server
 				.transactions()
@@ -148,7 +162,7 @@ export class StellarMonitor extends EventEmitter {
 	}
 
 	private async processTransaction(
-		tx: Stellar.TransactionRecord
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<void> {
 		try {
 			// Check if transaction involves our contracts
@@ -170,24 +184,18 @@ export class StellarMonitor extends EventEmitter {
 		}
 	}
 
-	private isRelevantTransaction(tx: Stellar.TransactionRecord): boolean {
+	private isRelevantTransaction(tx: StellarSdk.ServerApi.TransactionRecord): boolean {
 		// Check if transaction involves our bridge or escrow contracts
 		return (
 			tx.operations_count > 0 &&
 			(tx.source_account === this.networkConfig.bridgeContract ||
-				tx.source_account === this.networkConfig.escrowContract ||
-				tx.operations?.some(
-					(op) =>
-						op.source_account ===
-							this.networkConfig.bridgeContract ||
-						op.source_account === this.networkConfig.escrowContract
-				))
+				tx.source_account === this.networkConfig.escrowContract)
 		);
 	}
 
 	private async processOperation(
-		op: Stellar.OperationRecord,
-		tx: Stellar.TransactionRecord
+		op: StellarSdk.ServerApi.OperationRecord,
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<void> {
 		try {
 			// Check for bridge events
@@ -205,8 +213,8 @@ export class StellarMonitor extends EventEmitter {
 	}
 
 	private async processBridgeOperation(
-		op: Stellar.OperationRecord,
-		tx: Stellar.TransactionRecord
+		op: StellarSdk.ServerApi.OperationRecord,
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<void> {
 		try {
 			// Parse bridge event from operation
@@ -227,8 +235,8 @@ export class StellarMonitor extends EventEmitter {
 	}
 
 	private async processEscrowOperation(
-		op: Stellar.OperationRecord,
-		tx: Stellar.TransactionRecord
+		op: StellarSdk.ServerApi.OperationRecord,
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<void> {
 		try {
 			// Parse escrow event from operation
@@ -249,8 +257,8 @@ export class StellarMonitor extends EventEmitter {
 	}
 
 	private async parseBridgeEvent(
-		op: Stellar.OperationRecord,
-		tx: Stellar.TransactionRecord
+		op: StellarSdk.ServerApi.OperationRecord,
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<BridgeEvent | null> {
 		try {
 			// Parse bridge event from operation data
@@ -274,8 +282,8 @@ export class StellarMonitor extends EventEmitter {
 	}
 
 	private async parseEscrowEvent(
-		op: Stellar.OperationRecord,
-		tx: Stellar.TransactionRecord
+		op: StellarSdk.ServerApi.OperationRecord,
+		tx: StellarSdk.ServerApi.TransactionRecord
 	): Promise<EscrowEvent | null> {
 		try {
 			// Parse escrow event from operation data
@@ -304,17 +312,24 @@ export class StellarMonitor extends EventEmitter {
 		lastProcessedBlock: number;
 		currentLedger: number;
 		uptime: number;
+		escrowClientConnected: boolean;
 	}> {
 		try {
-			const latestLedger = await this.server.getLatestLedger();
+			const latestLedger = await this.server.ledgers().order('desc').limit(1).call();
+			let escrowClientConnected = false;
+			
+			if (this.escrowClient) {
+				escrowClientConnected = await this.escrowClient.healthCheck();
+			}
 
 			return {
 				connected: this.isRunning,
 				lastProcessedBlock: this.lastProcessedLedger,
-				currentLedger: latestLedger.sequence,
-				uptime: this.isRunning
-					? Date.now() - (this.startTime || Date.now())
+				currentLedger: latestLedger.records[0].sequence,
+				uptime: this.isRunning && this.startTime
+					? Date.now() - this.startTime
 					: 0,
+				escrowClientConnected,
 			};
 		} catch (error) {
 			logger.error("Error getting Stellar health status", error);
@@ -324,6 +339,7 @@ export class StellarMonitor extends EventEmitter {
 				lastProcessedBlock: this.lastProcessedLedger,
 				currentLedger: 0,
 				uptime: 0,
+				escrowClientConnected: false,
 			};
 		}
 	}
@@ -349,13 +365,67 @@ export class StellarMonitor extends EventEmitter {
 			// Manually process a specific escrow event
 			logger.info("Manually processing escrow event", { escrowId });
 
-			// This would involve querying the blockchain for the specific event
-			// and processing it as if it was detected by the monitor
+			// Query escrow data directly from contract
+			if (this.escrowClient) {
+				const escrowData = await this.escrowClient.getEscrow(escrowId);
+				
+				if (escrowData) {
+					const escrowEvent: EscrowEvent = {
+						escrowId: escrowData.id,
+						maker: escrowData.maker,
+						amount: escrowData.amount,
+						asset: escrowData.asset,
+						hashLock: escrowData.hashLock,
+						timeLock: escrowData.timeLock,
+						status: escrowData.status,
+						timestamp: escrowData.createdAt,
+						txHash: `manual_${Date.now()}`,
+					};
+					
+					// Emit appropriate event based on escrow status
+					switch (escrowData.status) {
+						case 0:
+							this.emit("escrowCreated", escrowEvent);
+							break;
+						case 1:
+							this.emit("escrowLocked", escrowEvent);
+							break;
+						case 2:
+							this.emit("escrowCompleted", escrowEvent);
+							break;
+						case 3:
+							this.emit("escrowRefunded", escrowEvent);
+							break;
+					}
+				}
+			}
 		} catch (error) {
 			logger.error("Error manually processing escrow event", error, {
 				escrowId,
 			});
 			throw error;
 		}
+	}
+
+	/**
+	 * Query escrow data directly from contract
+	 */
+	async getEscrowData(escrowId: string): Promise<any> {
+		if (!this.escrowClient) {
+			throw new Error("Escrow client not initialized");
+		}
+		
+		return await this.escrowClient.getEscrow(escrowId);
+	}
+
+	/**
+	 * Get contract statistics
+	 */
+	async getContractStats(): Promise<any> {
+		if (!this.escrowClient) {
+			throw new Error("Escrow client not initialized");
+		}
+		
+		return await this.escrowClient.getStats();
 	}
 }

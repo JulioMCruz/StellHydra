@@ -79,6 +79,10 @@ export function BridgeInterface({
 
 	const { stellarWallet, sepoliaWallet, connectStellar, connectSepolia } =
 		useWallet();
+	
+	// Debug wallet state
+	console.log("BridgeInterface - Stellar wallet state:", stellarWallet);
+	console.log("BridgeInterface - Sepolia wallet state:", sepoliaWallet);
 	const {
 		simulation,
 		routeComparison,

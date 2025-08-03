@@ -3,16 +3,15 @@
   "chainId": 11155111,
   "contracts": {
     "StellarEthereumEscrow": {
-      "address": "0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940",
+      "address": "0x89B85ADc3d973d860648745e4980f634E3bcb01a",
       "constructorArgs": [],
-      "verified": true,
-      "etherscanUrl": "https://sepolia.etherscan.io/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940#code",
-      "blockscoutUrl": "https://eth-sepolia.blockscout.com/address/0xA3268A7e4f3dF28ABb09a8eDe7665Cba9E82e940",
-      "deployedAt": "2025-07-30T15:52:00.000Z",
-      "status": "✅ Production Ready & Verified"
+      "blockNumber": 0,
+      "transactionHash": "0x78626971a98310cda5f2d20485e75119e406ca41d6ed9e1718428748c0675e3d",
+      "deployedAt": "2025-08-03T14:32:25.055Z"
     }
   },
-  "deployer": "0x31C6949cb3A40546e2C2752005A6F9a44f8BD45B",
-  "deploymentSuccess": true,
-  "verificationSuccess": true
+  "deployer": "0x2D369378819ea4324FdC69BB106191338422bd17",
+  "gasUsed": {
+    "StellarEthereumEscrow": "1189354"
+  }
 }

@@ -14,6 +14,7 @@ import {
 export interface StellarWallet {
 	isAvailable: boolean;
 	isConnected: boolean;
+	isConnecting?: boolean;
 	address: string;
 	balance: string;
 	selectedWalletId?: string;
@@ -57,38 +58,48 @@ export const stellarService = {
 		try {
 			const stellarKit = initializeKit();
 
-			// Open the wallet selection modal
-			await stellarKit.openModal({
-				onWalletSelected: async (option) => {
-					await stellarKit.setWallet(option.id);
-				},
-				modalTitle: "Connect Stellar Wallet",
-				notAvailableText: "No wallets available",
+			// Return a promise that resolves when wallet is connected
+			return new Promise((resolve, reject) => {
+				stellarKit.openModal({
+					onWalletSelected: async (option) => {
+						try {
+							await stellarKit.setWallet(option.id);
+							
+							// Get the connected wallet address
+							const { address } = await stellarKit.getAddress();
+
+							// Try to get balance, but handle new accounts
+							let balance = "0";
+							try {
+								balance = await this.getBalance(address);
+							} catch (error) {
+								console.log("New account or balance fetch failed, using 0");
+								balance = "0";
+							}
+
+							resolve({
+								isAvailable: true,
+								isConnected: true,
+								address,
+								balance,
+								selectedWalletId: option.id,
+							});
+						} catch (error) {
+							console.error("Failed to connect selected wallet:", error);
+							reject(new Error("Failed to connect selected wallet"));
+						}
+					},
+					onClosed: () => {
+						reject(new Error("Wallet connection cancelled"));
+					},
+					modalTitle: "Connect Stellar Wallet",
+					notAvailableText: "No wallets available. Please install Freighter, xBull, or another supported Stellar wallet.",
+				});
 			});
-
-			// Get the connected wallet address
-			const { address } = await stellarKit.getAddress();
-
-			// Try to get balance, but handle new accounts
-			let balance = "0";
-			try {
-				balance = await this.getBalance(address);
-			} catch (error) {
-				console.log("New account or balance fetch failed, using 0");
-				balance = "0";
-			}
-
-			return {
-				isAvailable: true,
-				isConnected: true,
-				address,
-				balance,
-				selectedWalletId: "stellar-wallet",
-			};
 		} catch (error) {
 			console.error("Failed to connect Stellar wallet:", error);
 			throw new Error(
-				"Failed to connect Stellar wallet. Please try again."
+				"Failed to connect Stellar wallet. Please ensure you have a Stellar wallet installed."
 			);
 		}
 	},

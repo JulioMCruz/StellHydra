@@ -70,6 +70,39 @@ async function main() {
   console.log(`📄 Deployment info saved to: ${deploymentFile}`);
   console.log("");
 
+  // Update environment configuration
+  console.log("📝 Updating environment configuration...");
+  const envFile = path.join(__dirname, "..", "..", ".env");
+  
+  let envContent = "";
+  if (fs.existsSync(envFile)) {
+    envContent = fs.readFileSync(envFile, "utf8");
+  }
+
+  // Update or add Ethereum configuration
+  const ethConfig = [
+    `ETHEREUM_RPC_URL=https://${network.name}.infura.io/v3/your-key`,
+    `ETHEREUM_ESCROW_CONTRACT=${contractAddress}`,
+    `ETHEREUM_PRIVATE_KEY=your-private-key`,
+    `ETHEREUM_NETWORK=${network.name}`,
+    `ETHEREUM_CHAIN_ID=${network.chainId}`,
+  ];
+
+  for (const config of ethConfig) {
+    const [key, value] = config.split("=");
+    const regex = new RegExp(`^${key}=.*$`, "m");
+    
+    if (envContent.match(regex)) {
+      envContent = envContent.replace(regex, config);
+    } else {
+      envContent += `\n${config}`;
+    }
+  }
+
+  fs.writeFileSync(envFile, envContent);
+  console.log(`✅ Environment configuration updated in: ${envFile}`);
+  console.log("");
+
   // Display contract information
   console.log("📋 Contract Information:");
   console.log("========================");
